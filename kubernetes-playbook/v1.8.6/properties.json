@@ -20,14 +20,5 @@
         "type": "string",
         "default": "",
         "required": false
-    },
-    {
-        "variable": "cni",
-        "label": "kubernetes cni component",
-        "description": "1:flannel | 2:kuryr",
-        "type": "enum",
-        "default": "kuryr",
-        "required": true,
-        "options": [ "flannel", "kuryr" ]
     }
 ]

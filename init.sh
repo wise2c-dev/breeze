@@ -3,8 +3,6 @@
 set -e
 
 path=`dirname $0`
-aliyun_username=$1
-aliyun_password=$2
 
 for dir in `ls ${path}`
 do
@@ -13,7 +11,7 @@ do
         do
             echo ${version}
             if [ -f ${path}/${dir}/${version}/init.sh ]; then
-                bash ${path}/${dir}/${version}/init.sh ${version} ${aliyun_username} ${aliyun_password}
+                bash ${path}/${dir}/${version}/init.sh ${version}
             fi
         done
     fi

@@ -1,0 +1,3 @@
+[Service]
+Environment="KUBELET_EXTRA_ARGS=--pod-infra-container-image={{ registry_endpoint }}/{{ registry_project }}/pause-amd64:3.0 --feature-gates=LocalStorageCapacityIsolation=true"
+Environment="KUBELET_DNS_ARGS=--cluster-dns={% for host in groups['master'] %}{{ host }}{% if loop.length != loop.index %},{% endif %}{% endfor %} --cluster-domain={{ dns_domain }}"

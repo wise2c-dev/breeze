@@ -1,0 +1,10 @@
+endpoint: {{ .kubernetes.Inherent.endpoint }}
+token: 904250.ab14566918c0703b
+registry_endpoint: {{ .registry.Inherent.endpoint }}
+registry_user: {{ .registry.Inherent.user }}
+registry_password: {{ .registry.Inherent.password }}
+registry_project: library
+
+cni_name: {{ .kubernetes.Property.cni }}
+k8s_master: {{ (index .kubernetes.Hosts.master 0).IP }}
+dns_domain: cluster.local

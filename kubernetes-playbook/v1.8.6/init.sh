@@ -97,7 +97,8 @@ echo -n "$ALIYUN_PASSWORD" | docker login --username $ALIYUN_USERNAME --password
 
 #===wise2c-dns=== 
 # nathon's kube-dns
-wise2cdns_repo=registry.cn-hangzhou.aliyuncs.com/wise2c-test
+#wise2cdns_repo=registry.cn-hangzhou.aliyuncs.com/wise2c-test
+wise2cdns_repo=wisecloud
 wise2cdns_version=1.14.16
 echo "=== pulling wise2c-dns images ==="
 docker pull ${wise2cdns_repo}/k8s-dns-kube-dns-amd64:${wise2cdns_version}
@@ -113,7 +114,8 @@ echo "wise2cdns_repo: ${wise2cdns_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "wise2cdns_version: ${wise2cdns_version}" >> ${path}/yat/all.yml.gotmpl
 
 #===kuryr===
-KURYR_REPO=registry.cn-hangzhou.aliyuncs.com/wise2c-test
+#KURYR_REPO=registry.cn-hangzhou.aliyuncs.com/wise2c-test
+KURYR_REPO=wisecloud
 KURYR_VERSION=v1.5.0-cmft
 echo "=== pulling kuryr images ==="
 docker pull ${KURYR_REPO}/zone_crd:${KURYR_VERSION}

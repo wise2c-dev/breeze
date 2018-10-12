@@ -11,6 +11,8 @@ data:
     debug                  = true
     log_file               = kuryr.log
     log_dir                = /tmp
+    [cni_health_server]
+    port = 28090
     [oslo_concurrency]
     lock_path              = /tmp
     #bindir                = /root/kuryr-k8s-controller/env/libexec/kuryr
@@ -100,6 +102,29 @@ spec:
         image: {{ registry_endpoint }}/{{ registry_project }}/kuryr-cni:{{ kuryr_version }}
         imagePullPolicy: IfNotPresent
         command: ["cni_ds_init"]
+        ports:
+        - containerPort: 28090
+          name: health
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /alive
+            port: health
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 15
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ready
+            port: health
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 15
         env:
         - name: KUBERNETES_NODE_NAME
           valueFrom:

@@ -90,10 +90,10 @@ echo "=== save dashboard image success ==="
 
 #--------------------------------------------------------------------------------
 
-echo "=== docker login registry.cn-hangzhou.aliyuncs.com ==="
-ALIYUN_USERNAME=$2
-ALIYUN_PASSWORD=$3
-echo -n "$ALIYUN_PASSWORD" | docker login --username $ALIYUN_USERNAME --password-stdin registry.cn-hangzhou.aliyuncs.com
+# echo "=== docker login registry.cn-hangzhou.aliyuncs.com ==="
+# ALIYUN_USERNAME=$2
+# ALIYUN_PASSWORD=$3
+# echo -n "$ALIYUN_PASSWORD" | docker login --username $ALIYUN_USERNAME --password-stdin registry.cn-hangzhou.aliyuncs.com
 
 #===wise2c-dns=== 
 # nathon's kube-dns

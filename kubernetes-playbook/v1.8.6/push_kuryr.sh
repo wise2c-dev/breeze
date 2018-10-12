@@ -18,7 +18,7 @@ if [ $? != 0 ]; then
 fi
 
 if [[ -z $DOCKER_USERNAME ]] || [[ -z $DOCKER_PASSWORD ]]; then
-    echo "Before push_kuryr.sh, please input dev.aliyun.com username and password"
+    echo "Before push_kuryr.sh, please input dockerhub.com username and password"
     echo "export DOCKER_USERNAME=<<dockerhub_username>>"
     echo "export DOCKER_PASSWORD=<<dockerhub_password>>"
     exit 1
@@ -32,7 +32,7 @@ docker pull registry.cn-hangzhou.aliyuncs.com/wise2c-dev/kuryr-controller:${sour
 docker pull registry.cn-hangzhou.aliyuncs.com/wise2c-dev/kuryr-cni:${source_version}
 
 
-docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/zone_crd:v1.0.2         registry.cn-hangzhou.aliyuncs.com/wise2c-test/zone_crd:${target_version}
+docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/zone_crd:v1.0.2                    registry.cn-hangzhou.aliyuncs.com/wise2c-test/zone_crd:${target_version}
 docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/kuryr-controller:${source_version} registry.cn-hangzhou.aliyuncs.com/wise2c-test/kuryr-controller:${target_version}
 docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/kuryr-cni:${source_version}        registry.cn-hangzhou.aliyuncs.com/wise2c-test/kuryr-cni:${target_version}
 

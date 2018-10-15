@@ -230,9 +230,13 @@ spec:
         name: zone-crd
       name: zone-crd
     spec:
+      hostNetwork: true
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
       serviceAccountName: zone-crd
       automountServiceAccountToken: true
-      hostNetwork: true
       containers:
       - image: {{ registry_endpoint }}/{{ registry_project }}/zone_crd:{{ kuryr_version }}
         name: zone-crd-pod

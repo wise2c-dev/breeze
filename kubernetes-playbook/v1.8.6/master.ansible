@@ -116,34 +116,3 @@
   shell: |
     cp /etc/kubernetes/admin.conf $HOME/.kube/config
     chown $(id -u):$(id -g) $HOME/.kube/config
-
-- name: flannel addons
-  shell: |
-    kubectl apply -f {{ path }}/kube-flannel-rbac.yml
-    kubectl apply -f {{ path }}/kube-flannel.yml
-  when: cni_name == 'flannel'
-  run_once: true
-
-- name: kuryr addons
-  shell: |
-    kubectl apply -f {{ path }}/kube-kuryr.yml
-  when: cni_name  == 'kuryr'
-  run_once: true
-
-- name: generate kubedns config
-  template:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-  with_items:
-  - { src: 'template/kube-dns.yml.j2', dest: '{{ path }}/kube-dns.yml' }
-
-- name: kubedns addons
-  shell: |
-    kubectl delete -f {{ path }}/kube-dns.yml
-    kubectl apply -f {{ path }}/kube-dns.yml
-  run_once: true
-
-- name: apply dashboard addons
-  shell: |
-    kubectl apply -f {{ path }}/kubernetes-dashboard.yml
-  run_once: true

@@ -20,5 +20,13 @@
         "type": "string",
         "default": "",
         "required": false
+    },
+    {
+        "variable": "ipvs",
+        "label": "kube-proxy support ipvs",
+        "description": "kube-proxy support ipvs",
+        "type": "bool",
+        "default": false,
+        "required": true
     }
 ]

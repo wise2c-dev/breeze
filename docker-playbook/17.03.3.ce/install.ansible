@@ -60,7 +60,7 @@
     with_items:
     - rsync
     - jq
-    - docker
+    - docker-ce-17.03.3.ce
     - python-docker-py
     - docker-compose
 

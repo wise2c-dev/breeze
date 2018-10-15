@@ -5,14 +5,18 @@ set -e
 path=`dirname $0`
 
 kubernetes_repo="gcr.io/google_containers"
-kubernetes_version=`docker run -it --rm \
-                    -e KUBERNETES_VERSION=${1} \
-                    -e KUBERNETES_COMPONENT=kube-apiserver \
-                    ymian/kube-version:1.11`
-dns_version=`docker run -it --rm \
-                    -e KUBERNETES_VERSION=${1} \
-                    -e KUBERNETES_COMPONENT=kube-dns \
-                    ymian/kube-version:1.10`
+# kubernetes_version=`docker run -it --rm \
+#                    -e KUBERNETES_VERSION=${1} \
+#                    -e KUBERNETES_COMPONENT=kube-apiserver \
+#                    ymian/kube-version:1.11`
+# dns_version=`docker run -it --rm \
+#                    -e KUBERNETES_VERSION=${1} \
+#                    -e KUBERNETES_COMPONENT=kube-dns \
+#                    ymian/kube-version:1.11`
+
+kubernetes_version="v1.11.3"
+dns_version="1.14.8"
+
 pause_version="3.1"
 echo "" >> ${path}/yat/all.yml.gotmpl
 echo "kubernetes_repo: ${kubernetes_repo}" >> ${path}/yat/all.yml.gotmpl

@@ -76,8 +76,8 @@
     - name: setup node
       include_tasks: node.ansible
       when: role == 'node'
-    when: check_output.stdout != 'true'
 
-    - name: setup addon on master
+    - name: setup addon
       include_tasks: addon.ansible
       when: role == 'master'
+    when: check_output.stdout != 'true'

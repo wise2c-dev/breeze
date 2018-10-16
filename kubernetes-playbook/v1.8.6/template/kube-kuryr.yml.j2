@@ -9,8 +9,7 @@ data:
   kuryr.conf: |
     [DEFAULT]
     debug                  = true
-    log_file               = kuryr.log
-    log_dir                = /tmp
+    use_syslog             = true
     [cni_health_server]
     port = 28090
     [oslo_concurrency]
@@ -151,6 +150,8 @@ spec:
           mountPath: /host_proc
         - name: openvswitch
           mountPath: /var/run/openvswitch
+        - name: syslog
+          mountPath: /dev/log
 
       volumes:
         - name: pki
@@ -171,6 +172,9 @@ spec:
         - name: openvswitch
           hostPath: 
             path: /var/run/openvswitch
+        - name: syslog
+          hostPath: 
+            path: /dev/log
 ---
 # kuryr-operator
 apiVersion: v1

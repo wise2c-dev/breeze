@@ -4,7 +4,7 @@ set -e
 
 path=`dirname $0`
 
-kubernetes_repo="gcr.io/google_containers"
+#kubernetes_repo="gcr.io/google_containers"
 # kubernetes_version=`docker run -it --rm \
 #                    -e KUBERNETES_VERSION=${1} \
 #                    -e KUBERNETES_COMPONENT=kube-apiserver \
@@ -14,6 +14,7 @@ kubernetes_repo="gcr.io/google_containers"
 #                    -e KUBERNETES_COMPONENT=kube-dns \
 #                    ymian/kube-version:1.11`
 
+kubernetes_repo="k8s.gcr.io"
 kubernetes_version="v1.11.3"
 dns_version="1.14.10"
 

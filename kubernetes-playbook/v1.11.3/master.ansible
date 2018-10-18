@@ -117,7 +117,7 @@
 
 - name: setup
   shell: |
-    kubeadm init --feature-gates=CoreDNS=false --config {{ path }}/kubeadm.conf
+    kubeadm init --config {{ path }}/kubeadm.conf
 
 - name: fetch admin.conf
   fetch:

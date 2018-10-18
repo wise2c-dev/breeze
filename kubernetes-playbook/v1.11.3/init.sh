@@ -15,7 +15,7 @@ kubernetes_repo="gcr.io/google_containers"
 #                    ymian/kube-version:1.11`
 
 kubernetes_version="v1.11.3"
-dns_version="1.14.8"
+dns_version="1.14.10"
 
 pause_version="3.1"
 echo "" >> ${path}/yat/all.yml.gotmpl

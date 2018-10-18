@@ -41,7 +41,7 @@
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-sidecar-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-dnsmasq-nanny-amd64', tag: '{{ dns_version }}' }
-  - { repo: '{{ kubernetes_repo }}', name: 'pause-amd64', tag: '{{ pause_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   - { repo: '{{ dashboard_repo }}', name: 'kubernetes-dashboard-amd64', tag: '{{ dashboard_version }}' }
   run_once: true
@@ -60,7 +60,7 @@
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-sidecar-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-dnsmasq-nanny-amd64', tag: '{{ dns_version }}' }
-  - { repo: '{{ kubernetes_repo }}', name: 'pause-amd64', tag: '{{ pause_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   - { repo: '{{ dashboard_repo }}', name: 'kubernetes-dashboard-amd64', tag: '{{ dashboard_version }}' }
   run_once: true
@@ -72,15 +72,15 @@
     pull: true
     state: present
   with_items:
-  - { repo: '{{ kubernetes_repo }}', name: 'pause-amd64', tag: '{{ pause_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
 
 - name: tag k8s pause images
   docker_image:
     name: '{{ item.repo }}/{{ item.name }}'
-    repository: '{{ kubernetes_repo }}/pause-amd64:{{ pause_version }}'
+    repository: '{{ kubernetes_repo }}/pause:{{ pause_version }}'
     tag: '{{ item.tag }}'
   with_items:
-  - { repo: '{{ registry_endpoint }}/{{ registry_project }}', name: 'pause-amd64', tag: '{{ pause_version }}' }
+  - { repo: '{{ registry_endpoint }}/{{ registry_project }}', name: 'pause', tag: '{{ pause_version }}' }
 
 - name: generate kubeadm config
   template:
@@ -117,7 +117,7 @@
 
 - name: setup
   shell: |
-    kubeadm init --config {{ path }}/kubeadm.conf
+    kubeadm init --feature-gates=CoreDNS=false --config {{ path }}/kubeadm.conf
 
 - name: fetch admin.conf
   fetch:

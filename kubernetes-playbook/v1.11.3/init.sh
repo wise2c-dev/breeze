@@ -50,7 +50,7 @@ docker pull ${kubernetes_repo}/kube-apiserver-amd64:${kubernetes_version}
 docker pull ${kubernetes_repo}/kube-controller-manager-amd64:${kubernetes_version}
 docker pull ${kubernetes_repo}/kube-scheduler-amd64:${kubernetes_version}
 docker pull ${kubernetes_repo}/kube-proxy-amd64:${kubernetes_version}
-docker pull ${kubernetes_repo}/pause-amd64:${pause_version}
+docker pull ${kubernetes_repo}/pause:${pause_version}
 docker pull ${kubernetes_repo}/k8s-dns-sidecar-amd64:${dns_version}
 docker pull ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version}
 docker pull ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version}
@@ -61,7 +61,7 @@ docker save ${kubernetes_repo}/kube-apiserver-amd64:${kubernetes_version} \
     ${kubernetes_repo}/kube-controller-manager-amd64:${kubernetes_version} \
     ${kubernetes_repo}/kube-scheduler-amd64:${kubernetes_version} \
     ${kubernetes_repo}/kube-proxy-amd64:${kubernetes_version} \
-    ${kubernetes_repo}/pause-amd64:${pause_version} \
+    ${kubernetes_repo}/pause:${pause_version} \
     ${kubernetes_repo}/k8s-dns-sidecar-amd64:${dns_version} \
     ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version} \
     ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version} \

@@ -15,17 +15,17 @@
   with_items:
   - { repo: '{{ registry_endpoint }}/{{ registry_project }}', name: 'pause', tag: '{{ pause_version }}' }
 
-- name: ipvs config
-  copy:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-  with_items:
-  - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
+#- name: ipvs config
+#  copy:
+#    src: '{{ item.src }}'
+#    dest: '{{ item.dest }}'
+#  with_items:
+#  - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
 
-- name: setup ipvs
-  shell: |
-    chmod +x /etc/sysconfig/modules/ipvs.modules 
-    bash /etc/sysconfig/modules/ipvs.modules
+#- name: setup ipvs
+#  shell: |
+#    chmod +x /etc/sysconfig/modules/ipvs.modules 
+#    bash /etc/sysconfig/modules/ipvs.modules
       
 - name: copy k8s admin.conf
   copy:

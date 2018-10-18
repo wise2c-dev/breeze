@@ -6,7 +6,6 @@
   - { src: 'file/k8s.tar.bz2', dest: '{{ path }}' }
   - { src: 'file/flannel.tar.bz2', dest: '{{ path }}' }
   - { src: 'file/dashboard.tar.bz2', dest: '{{ path }}' }
-  - { src: 'file/kube-flannel-rbac.yml', dest: '{{ path }}' }
   run_once: true
 
 - name: load k8s images
@@ -91,17 +90,17 @@
   - { src: 'template/kube-flannel.yml.j2', dest: '{{ path }}/kube-flannel.yml' }
   - { src: 'template/kubernetes-dashboard.yml.j2', dest: '{{ path }}/kubernetes-dashboard.yml' }
 
-- name: ipvs config
-  copy:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-  with_items:
-  - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
+#- name: ipvs config
+#  copy:
+#    src: '{{ item.src }}'
+#    dest: '{{ item.dest }}'
+#  with_items:
+#  - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
 
-- name: setup ipvs
-  shell: |
-    chmod +x /etc/sysconfig/modules/ipvs.modules 
-    bash /etc/sysconfig/modules/ipvs.modules
+#- name: setup ipvs
+#  shell: |
+#    chmod +x /etc/sysconfig/modules/ipvs.modules 
+#    bash /etc/sysconfig/modules/ipvs.modules
 
 - name: copy crt & key
   copy:

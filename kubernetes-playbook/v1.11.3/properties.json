@@ -22,6 +22,14 @@
         "required": false
     },
     {
+        "variable": "wise2cdns",
+        "label": "wise2cdns",
+        "description": "kubernetes support wise2c-dns",
+        "type": "bool",
+        "default": true,
+        "required": true
+    },
+    {
         "variable": "ipvs",
         "label": "kube-proxy support ipvs",
         "description": "kube-proxy support ipvs",

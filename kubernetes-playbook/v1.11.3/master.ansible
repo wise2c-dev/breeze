@@ -38,11 +38,13 @@
   - { repo: '{{ kubernetes_repo }}', name: 'kube-scheduler-amd64', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'kube-proxy-amd64', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-sidecar-amd64', tag: '{{ dns_version }}' }
-  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-dnsmasq-nanny-amd64', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns-amd64', tag: '{{ dns_version }}' }
+  - { repo: 'wisecloud', name: 'k8s-dns-kube-dns-amd64', tag: '1.14.16'}
   - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   - { repo: '{{ dashboard_repo }}', name: 'kubernetes-dashboard-amd64', tag: '{{ dashboard_version }}' }
+
   run_once: true
 
 - name: push images
@@ -59,6 +61,7 @@
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-sidecar-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-dnsmasq-nanny-amd64', tag: '{{ dns_version }}' }
+  - { repo: 'wisecloud', name: 'k8s-dns-kube-dns-amd64', tag: '1.14.16'}
   - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   - { repo: '{{ dashboard_repo }}', name: 'kubernetes-dashboard-amd64', tag: '{{ dashboard_version }}' }
@@ -90,18 +93,20 @@
   - { src: 'template/kube-flannel.yml.j2', dest: '{{ path }}/kube-flannel.yml' }
   - { src: 'template/kubernetes-dashboard.yml.j2', dest: '{{ path }}/kubernetes-dashboard.yml' }
 
-#- name: ipvs config
-#  copy:
-#    src: '{{ item.src }}'
-#    dest: '{{ item.dest }}'
-#  with_items:
-#  - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
+- name: ipvs config
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+  - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
+  when: support_ipvs
 
-#- name: setup ipvs
-#  shell: |
-#    chmod +x /etc/sysconfig/modules/ipvs.modules 
-#    bash /etc/sysconfig/modules/ipvs.modules
-
+- name: setup ipvs
+  shell: |
+    chmod +x /etc/sysconfig/modules/ipvs.modules 
+    bash /etc/sysconfig/modules/ipvs.modules
+  when: support_ipvs
+  
 - name: copy crt & key
   copy:
     src: '{{ item.src }}'
@@ -137,3 +142,8 @@
     kubectl apply -f {{ path }}/kube-flannel.yml
     kubectl apply -f {{ path }}/kubernetes-dashboard.yml
   run_once: true
+
+- name: apply wise2c-dns
+  shell: |
+    kubectl -n kube-system set image deploy/kube-dns kubedns={{ registry_endpoint }}/{{ registry_project }}/k8s-dns-kube-dns-amd64:1.14.16
+  when: support_wise2cdns

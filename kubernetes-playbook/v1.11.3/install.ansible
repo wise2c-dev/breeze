@@ -41,10 +41,16 @@
       - kubelet-{{ kubernetes_version[1:] }}
       - kubeadm-{{ kubernetes_version[1:] }}
 
-#    - name: unarchive cni
-#      unarchive:
-#        src: file/cni-plugins-amd64-v0.6.0.tgz
-#        dest: /opt/cni/bin
+    - name: install ipvsadm components
+      yum:
+        disablerepo: '*'
+        enablerepo: wise2c
+        update_cache: true
+        state: present
+        name: '{{ item }}'
+      with_items:
+      - ipvsadm
+      when: support_ipvs
 
     - name: distribute kubelet config
       template:

@@ -40,7 +40,7 @@
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-sidecar-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-dnsmasq-nanny-amd64', tag: '{{ dns_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns-amd64', tag: '{{ dns_version }}' }
-  - { repo: 'wisecloud', name: 'k8s-dns-kube-dns-amd64', tag: '1.14.16'}
+  - { repo: 'wisecloud', name: 'k8s-dns-kube-dns-amd64', tag: '1.14.10.1'}
   - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   - { repo: '{{ dashboard_repo }}', name: 'kubernetes-dashboard-amd64', tag: '{{ dashboard_version }}' }
@@ -145,5 +145,5 @@
 
 - name: apply wise2c-dns
   shell: |
-    kubectl -n kube-system set image deploy/kube-dns kubedns={{ registry_endpoint }}/{{ registry_project }}/k8s-dns-kube-dns-amd64:1.14.16
+    kubectl -n kube-system set image deploy/kube-dns kubedns={{ registry_endpoint }}/{{ registry_project }}/k8s-dns-kube-dns-amd64:1.14.10.1
   when: support_wise2cdns

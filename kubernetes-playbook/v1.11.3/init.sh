@@ -55,7 +55,7 @@ docker pull ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version}
 docker pull ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version}
 #nathon's wise2c-dns. 
 #  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/k8s-dns-kube-dns-amd64:1.14.16
-docker pull wisecloud/k8s-dns-kube-dns-amd64:1.14.16
+docker pull wisecloud/k8s-dns-kube-dns-amd64:1.14.10.1
 
 echo "=== pull kubernetes images success ==="
 echo "=== saving kubernetes images ==="
@@ -68,7 +68,7 @@ docker save ${kubernetes_repo}/kube-apiserver-amd64:${kubernetes_version} \
     ${kubernetes_repo}/k8s-dns-sidecar-amd64:${dns_version} \
     ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version} \
     ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version} \
-    wisecloud/k8s-dns-kube-dns-amd64:1.14.16 \
+    wisecloud/k8s-dns-kube-dns-amd64:1.14.10.1 \
     > ${path}/file/k8s.tar
 rm ${path}/file/k8s.tar.bz2 -f
 bzip2 -z --best ${path}/file/k8s.tar

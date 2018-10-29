@@ -53,8 +53,8 @@ docker pull ${kubernetes_repo}/pause:${pause_version}
 docker pull ${kubernetes_repo}/k8s-dns-sidecar-amd64:${dns_version}
 docker pull ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version}
 docker pull ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version}
-#nathon's wise2c-dns. 
-#  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/k8s-dns-kube-dns-amd64:1.14.16
+#nathon's wise2c-dns. registry.cn-hangzhou.aliyuncs.com/wise2c-dev/k8s-dns-kube-dns-amd64:1.14.16
+#zhouyi's wise2c-dns with 1.14.10 and nathon's code.
 docker pull wisecloud/k8s-dns-kube-dns-amd64:1.14.10.1
 
 echo "=== pull kubernetes images success ==="

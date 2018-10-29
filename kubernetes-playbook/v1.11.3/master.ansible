@@ -147,3 +147,9 @@
   shell: |
     kubectl -n kube-system set image deploy/kube-dns kubedns={{ registry_endpoint }}/{{ registry_project }}/k8s-dns-kube-dns-amd64:1.14.10.1
   when: support_wise2cdns
+
+- name: update kube-proxy configmap
+  shell: |
+    kubectl -n kube-system get cm kube-proxy -o yaml|sed 's/mode: ".*"/mode: "ipvs"/g'|kubectl -n kube-system replace -f -
+    kubectl -n kube-system delete pod $(kubectl -n kube-system get pod | grep 'kube-proxy' | awk '{print $1}')
+  when: support_ipvs  

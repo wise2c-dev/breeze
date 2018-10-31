@@ -41,6 +41,11 @@
       - kubelet-{{ kubernetes_version[1:] }}
       - kubeadm-{{ kubernetes_version[1:] }}
 
+    - name: unarchive cfssl tool
+      unarchive:
+        src: file/cfssl-tools.tar.gz
+        dest: /usr/local/bin
+
     - name: install ipvsadm components
       yum:
         disablerepo: '*'

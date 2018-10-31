@@ -36,5 +36,13 @@
         "type": "bool",
         "default": false,
         "required": true
+    },
+    {
+        "variable": "kubecmd",
+        "label": "kubecmd support kubectl",
+        "description": "kubecmd support kubectl",
+        "type": "bool",
+        "default": false,
+        "required": true
     }
 ]

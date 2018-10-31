@@ -28,20 +28,17 @@
     chmod +x /etc/sysconfig/modules/ipvs.modules 
     bash /etc/sysconfig/modules/ipvs.modules
   when: support_ipvs
-      
-- name: copy k8s admin.conf
-  copy:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-  with_items:
-  - { src: 'file/admin.conf', dest: '{{ ansible_env.HOME }}/.kube/config' }
 
 - name: setup node
   shell: |
     kubeadm join --token {{ token }} {{ endpoint }} --discovery-token-unsafe-skip-ca-verification {{ endpoint }}
     sed -i "s/.*server:.*/    server: https:\/\/{{ endpoint }}/g" /etc/kubernetes/kubelet.conf
+
+- name: deploy .kube/config for kubectl
+  shell: |
     cp {{ path }}/admin.conf $HOME/.kube/config
     chown $(id -u):$(id -g) $HOME/.kube/config
+  when: support_kubecmd
 
 - name: restart kubelet
   systemd: 

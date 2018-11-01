@@ -15,4 +15,5 @@ AVAILABLE=`kubectl -n kube-system get ds kube-proxy | awk 'NR==2{print $6}'`
 done
 
 #kubectl -n kube-system delete pod $(kubectl -n kube-system get pod | grep 'kube-proxy' | awk '{print $1}')
-kubectl -n kube-system get pod  | grep 'kube-proxy' | awk '{print $1}' | xargs -I % sh -c 'echo "delete pod "%;kubectl -n kube-system delete pod %;'
+# -r  no-run-if-empty
+kubectl -n kube-system get pod  | grep 'kube-proxy' | awk '{print $1}' | xargs -r -I % sh -c 'echo "delete pod "%;kubectl -n kube-system delete pod %;'

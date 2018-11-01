@@ -192,6 +192,7 @@
     dest: '{{ item.dest }}'
   with_items:
   - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
+  - { src: 'file/ipvs.sh',      dest: '{{path}}'}
   when: support_ipvs
 
 - name: setup ipvs
@@ -202,6 +203,5 @@
   
 - name: update kube-proxy configmap for ipvs
   shell: |
-    kubectl -n kube-system get cm kube-proxy -o yaml|sed 's/mode: ".*"/mode: "ipvs"/g'|kubectl -n kube-system replace -f -
-    kubectl -n kube-system delete pod $(kubectl -n kube-system get pod | grep 'kube-proxy' | awk '{print $1}')
-  when: support_ipvs  
+    bash /var/tmp/wise2c/kubernetes/ipvs.sh
+  when: support_ipvs

@@ -119,6 +119,7 @@ KURYR_REPO=wisecloud
 KURYR_VERSION=v1.5.0-cmft
 echo "=== pulling kuryr images ==="
 docker pull ${KURYR_REPO}/zone_crd:${KURYR_VERSION}
+docker pull ${KURYR_REPO}/leader-elector:0.5
 docker pull ${KURYR_REPO}/kuryr-controller:${KURYR_VERSION}
 docker pull ${KURYR_REPO}/kuryr-cni:${KURYR_VERSION}
 echo "=== pull kuryr images success ==="

@@ -28,6 +28,7 @@ echo -n "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password
 
 # pull and push
 docker pull registry.cn-hangzhou.aliyuncs.com/wise2c-dev/zone_crd:v1.0.2
+docker pull  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/leader-elector:0.5
 docker pull registry.cn-hangzhou.aliyuncs.com/wise2c-dev/kuryr-controller:${source_version}
 docker pull registry.cn-hangzhou.aliyuncs.com/wise2c-dev/kuryr-cni:${source_version}
 
@@ -45,6 +46,7 @@ docker push registry.cn-hangzhou.aliyuncs.com/wise2c-test/kuryr-cni:${target_ver
 docker pull registry.cn-hangzhou.aliyuncs.com/wise2c-test/k8s-dns-kube-dns-amd64:1.14.16
 
 docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/zone_crd:v1.0.2                     wisecloud/zone_crd:${target_version}
+docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/leader-elector:0.5                     wisecloud/leader-elector:0.5
 docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/kuryr-controller:${source_version}  wisecloud/kuryr-controller:${target_version}
 docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-dev/kuryr-cni:${source_version}         wisecloud/kuryr-cni:${target_version}
 docker tag  registry.cn-hangzhou.aliyuncs.com/wise2c-test/k8s-dns-kube-dns-amd64:1.14.16     wisecloud/k8s-dns-kube-dns-amd64:1.14.16

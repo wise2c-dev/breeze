@@ -250,6 +250,7 @@ spec:
         - -kubeconfig=inCluster
         - -kns=kube-system
         - -image={{ registry_endpoint }}/{{ registry_project }}/kuryr-controller:{{ kuryr_version }}
+        - -limage={{ registry_endpoint }}/{{ registry_project }}/leader-elector:0.5
         terminationMessagePath: "/dev/termination-log"
       restartPolicy: Always
 ---

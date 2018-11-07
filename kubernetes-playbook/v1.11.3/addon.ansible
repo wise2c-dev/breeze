@@ -1,0 +1,32 @@
+- name: apply addons
+  shell: |
+    kubectl apply -f {{ path }}/kube-flannel.yml
+    kubectl apply -f {{ path }}/kubernetes-dashboard.yml
+  run_once: true
+
+- name: apply wise2c-dns
+  shell: |
+    kubectl -n kube-system set image deploy/kube-dns kubedns={{ registry_endpoint }}/{{ registry_project }}/k8s-dns-kube-dns-amd64:1.14.10.1
+  when: support_wise2cdns
+  run_once: true
+
+- name: ipvs config
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+  - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
+  - { src: 'file/ipvs.sh',      dest: '{{path}}'}
+  when: support_ipvs
+
+- name: setup ipvs
+  shell: |
+    chmod +x /etc/sysconfig/modules/ipvs.modules 
+    bash /etc/sysconfig/modules/ipvs.modules
+  when: support_ipvs
+  
+- name: update kube-proxy configmap for ipvs
+  shell: |
+    bash /var/tmp/wise2c/kubernetes/ipvs.sh
+  when: support_ipvs
+  run_once: true

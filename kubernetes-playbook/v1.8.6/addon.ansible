@@ -6,6 +6,6 @@
 
 - name: apply wise2c-dns
   shell: |
-    kubectl -n kube-system set image deploy/kube-dns kubedns={{ registry_endpoint }}/{{ registry_project }}/k8s-dns-kube-dns-amd64:1.14.10.1
+    kubectl -n kube-system set image deploy/kube-dns kubedns={{ registry_endpoint }}/{{ registry_project }}/k8s-dns-kube-dns-amd64:1.14.5.1
   when: support_wise2cdns
   run_once: true

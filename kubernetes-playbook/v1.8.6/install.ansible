@@ -45,6 +45,10 @@
       unarchive:
         src: file/cni-plugins-amd64-v0.6.0.tgz
         dest: /opt/cni/bin
+    - name: unarchive cfssl tool
+      unarchive:
+        src: file/cfssl-tools.tar.gz
+        dest: /usr/local/bin
 
     - name: distribute kubelet config
       template:
@@ -76,4 +80,8 @@
     - name: setup node
       include_tasks: node.ansible
       when: role == 'node'
+
+    - name: setup addon
+      include_tasks: addon.ansible
+      when: role == 'master'
     when: check_output.stdout != 'true'

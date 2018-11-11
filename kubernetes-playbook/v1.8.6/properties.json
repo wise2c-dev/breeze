@@ -16,9 +16,26 @@
     {
         "variable": "endpoint",
         "label": "kubernetes entry point",
-        "description": "other can access kubernetes by this",
+        "description": "IP:port of kubernetes cluster entrypoint (e.g. 192.168.1.100:6444)",
         "type": "string",
         "default": "",
         "required": false
+    },
+    {
+        "variable": "wise2cdns",
+        "label": "wise2cdns",
+        "description": "kubernetes support wise2c-dns",
+        "type": "bool",
+        "default": true,
+        "required": true
+    },
+
+    {
+        "variable": "kubecmd",
+        "label": "config support kubectl",
+        "description": "config support kubectl",
+        "type": "bool",
+        "default": false,
+        "required": true
     }
 ]

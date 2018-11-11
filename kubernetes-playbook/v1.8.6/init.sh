@@ -4,7 +4,7 @@ set -e
 
 path=`dirname $0`
 
-kubernetes_repo="gcr.io/google_containers"
+#kubernetes_repo="gcr.io/google_containers"
 #kubernetes_version=`docker run -it --rm \
 #                    -e KUBERNETES_VERSION=${1} \
 #                    -e KUBERNETES_COMPONENT=kube-apiserver \
@@ -13,7 +13,7 @@ kubernetes_repo="gcr.io/google_containers"
 #                    -e KUBERNETES_VERSION=${1} \
 #                    -e KUBERNETES_COMPONENT=kube-dns \
 #                    ymian/kube-version:1.8`
-
+kubernetes_repo="gcr.io/google_containers"
 kubernetes_version="v1.8.6"
 dns_version="1.14.5"
 pause_version="3.0"
@@ -30,7 +30,7 @@ flannel_version="v0.10.0"
 echo "flannel_repo: ${flannel_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "flannel_version: ${flannel_version}-amd64" >> ${path}/yat/all.yml.gotmpl
 
-curl -sS https://raw.githubusercontent.com/coreos/flannel/${flannel_version}/Documentation/kube-flannel.yml \
+curl -sSL https://raw.githubusercontent.com/coreos/flannel/${flannel_version}/Documentation/kube-flannel.yml \
     | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
 
 dashboard_repo="k8s.gcr.io"
@@ -52,6 +52,9 @@ docker pull ${kubernetes_repo}/pause-amd64:${pause_version}
 docker pull ${kubernetes_repo}/k8s-dns-sidecar-amd64:${dns_version}
 docker pull ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version}
 docker pull ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version}
+#nathon's wise2c-dns. registry.cn-hangzhou.aliyuncs.com/wise2c-dev/k8s-dns-kube-dns-amd64:1.14.16
+docker pull wisecloud/k8s-dns-kube-dns-amd64:1.14.5.1
+
 echo "=== pull kubernetes images success ==="
 echo "=== saving kubernetes images ==="
 mkdir -p ${path}/file
@@ -63,6 +66,7 @@ docker save ${kubernetes_repo}/kube-apiserver-amd64:${kubernetes_version} \
     ${kubernetes_repo}/k8s-dns-sidecar-amd64:${dns_version} \
     ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version} \
     ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version} \
+    wisecloud/k8s-dns-kube-dsn-amd64:1.14.5.1
     > ${path}/file/k8s.tar
 rm ${path}/file/k8s.tar.bz2 -f
 bzip2 -z --best ${path}/file/k8s.tar
@@ -87,3 +91,12 @@ docker save ${dashboard_repo}/kubernetes-dashboard-amd64:${dashboard_version} \
 rm ${path}/file/dashboard.tar.bz2 -f
 bzip2 -z --best ${path}/file/dashboard.tar
 echo "=== save dashboard image success ==="
+
+echo "=== download cfssl tools ==="
+export CFSSL_URL=https://pkg.cfssl.org/R1.2
+curl -L -o cfssl ${CFSSL_URL}/cfssl_linux-amd64
+curl -L -o cfssljson ${CFSSL_URL}/cfssljson_linux-amd64
+curl -L -o cfssl-certinfo ${CFSSL_URL}/cfssl-certinfo_linux-amd64
+chmod +x cfssl cfssljson cfssl-certinfo
+tar zcvf ${path}/file/cfssl-tools.tar.gz cfssl cfssl-certinfo cfssljson
+echo "=== cfssl tools is download successfully ==="

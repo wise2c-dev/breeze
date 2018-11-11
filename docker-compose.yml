@@ -18,17 +18,17 @@ services:
     - playbook
   ui:
     container_name: deploy-ui
-    image: wise2c/k8s-deploy-ui
+    image: wisecloud/deploy-ui
     restart: always
     network_mode: "service:deploy"
   playbook:
     container_name: deploy-playbook
-    image: wise2c/playbook:v1.8.15
+    image: wisecloud/playbook:v1.8.6
     volumes:
     - playbook:/workspace
   yum-repo:
     container_name: deploy-yumrepo
-    image: wise2c/yum-repo:1.8.15
+    image: wisecloud/yum-repo:1.8.6
     ports:
     - 2009:2009 
     restart: always

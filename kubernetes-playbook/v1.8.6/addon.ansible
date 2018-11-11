@@ -1,0 +1,11 @@
+- name: apply addons
+  shell: |
+    kubectl apply -f {{ path }}/kube-flannel.yml
+    kubectl apply -f {{ path }}/kubernetes-dashboard.yml
+  run_once: true
+
+- name: apply wise2c-dns
+  shell: |
+    kubectl -n kube-system set image deploy/kube-dns kubedns={{ registry_endpoint }}/{{ registry_project }}/k8s-dns-kube-dns-amd64:1.14.10.1
+  when: support_wise2cdns
+  run_once: true

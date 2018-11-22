@@ -161,12 +161,6 @@
   shell: |
     kubeadm init --config {{ path }}/kubeadm.conf
 
-- name: apply flannel
-  shell: |
-    kubectl apply -f {{ path }}/kube-flannel.yml
-    kubectl apply -f {{ path }}/kubernetes-dashboard.yml
-  run_once: true
-
 - name: fetch admin.conf
   fetch:
     src: '{{ item.src }}'
@@ -180,3 +174,8 @@
   shell: |
     cp /etc/kubernetes/admin.conf $HOME/.kube/config
     chown $(id -u):$(id -g) $HOME/.kube/config
+
+- name: apply flannel
+  shell: |
+    kubectl apply -f {{ path }}/kube-flannel.yml
+  run_once: true

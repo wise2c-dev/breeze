@@ -34,6 +34,15 @@
     kubeadm join --token {{ token }} {{ endpoint }} --discovery-token-unsafe-skip-ca-verification {{ endpoint }}
     sed -i "s/.*server:.*/    server: https:\/\/{{ endpoint }}/g" /etc/kubernetes/kubelet.conf
 
+- name: copy admin.conf
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: preserve
+  with_items:
+  - { src: 'file/admin.conf', dest: '{{ path }}/' }
+  when: support_kubecmd
+  
 - name: config kubectl
   shell: |
     cp {{ path }}/admin.conf $HOME/.kube/config

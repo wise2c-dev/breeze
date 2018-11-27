@@ -15,14 +15,24 @@
   with_items:
   - { repo: '{{ registry_endpoint }}/{{ registry_project }}', name: 'pause-amd64', tag: '{{ pause_version }}' }
 
+
 - name: setup node
   shell: |
     kubeadm join --token {{ token }} {{ endpoint }}
     #sed -i "s/.*server:.*/    server: https:\/\/{{ endpoint }}/g" /etc/kubernetes/kubelet.conf
 
+- name: copy admin.conf
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+  - { src: 'file/admin.conf', dest: '{{ path }}/' }
+  when: support_kubecmd 
+
 - name: config kubectl
   shell: |
-    cp {{ path }}/admin.conf $HOME/.kube/config
+    mkdir -p $HOME/.kube/
+    cp {{ path }}/admin.conf $HOME/.kube/config    
     chown $(id -u):$(id -g) $HOME/.kube/config
   when: support_kubecmd
 

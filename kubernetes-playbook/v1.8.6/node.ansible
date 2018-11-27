@@ -5,25 +5,32 @@
     pull: true
     state: present
   with_items:
-  - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'pause-amd64', tag: '{{ pause_version }}' }
 
 - name: tag k8s pause images
   docker_image:
     name: '{{ item.repo }}/{{ item.name }}'
-    repository: '{{ kubernetes_repo }}/pause:{{ pause_version }}'
+    repository: '{{ kubernetes_repo }}/pause-amd64:{{ pause_version }}'
     tag: '{{ item.tag }}'
   with_items:
-  - { repo: '{{ registry_endpoint }}/{{ registry_project }}', name: 'pause', tag: '{{ pause_version }}' }
+  - { repo: '{{ registry_endpoint }}/{{ registry_project }}', name: 'pause-amd64', tag: '{{ pause_version }}' }
+
 - name: setup node
   shell: |
     kubeadm join --token {{ token }} {{ endpoint }}
-    sed -i "s/.*server:.*/    server: https:\/\/{{ endpoint }}/g" /etc/kubernetes/kubelet.conf
+    #sed -i "s/.*server:.*/    server: https:\/\/{{ endpoint }}/g" /etc/kubernetes/kubelet.conf
 
 - name: config kubectl
   shell: |
     cp {{ path }}/admin.conf $HOME/.kube/config
     chown $(id -u):$(id -g) $HOME/.kube/config
   when: support_kubecmd
+
+- name: change kubelet.conf's endpoint to web's endpoint
+  lineinfile:
+    dest: /etc/kubernetes/kubelet.conf
+    regexp: "server:"
+    line: "    server: https://{{ endpoint }}"  
 
 - name: restart kubelet
   systemd: 

@@ -36,11 +36,23 @@
     chown $(id -u):$(id -g) $HOME/.kube/config
   when: support_kubecmd
 
-- name: change kubelet.conf's endpoint to web's endpoint
-  lineinfile:
-    dest: /etc/kubernetes/kubelet.conf
-    regexp: "server:"
-    line: "    server: https://{{ endpoint }}"  
+- name: update the k8s lb address
+  shell: |
+    for i in {1..30}; do
+        if [ -f /etc/kubernetes/kubelet.conf ]; then
+            sed -i "s/.*server:.*/    server: https:\/\/{{ endpoint }}/g" /etc/kubernetes/kubelet.conf
+            break
+        else
+            echo "wait...$i"
+            sleep 1
+        fi
+    done;
+
+# - name: change kubelet.conf's endpoint to web's endpoint
+#   lineinfile:
+#     dest: /etc/kubernetes/kubelet.conf
+#     regexp: "server:"
+#     line: "    server: https://{{ endpoint }}"  
 
 - name: restart kubelet
   systemd: 

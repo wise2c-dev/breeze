@@ -5,7 +5,7 @@ set -e
 path=`dirname $0`
 
 
-docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
 
 # version info.
 docker_version="18.06.1.ce"

@@ -32,7 +32,7 @@
 - name: config kubectl
   shell: |
     mkdir -p $HOME/.kube/
-    cp {{ path }}/admin.conf $HOME/.kube/config    
+    cp {{ path }}/admin.conf $HOME/.kube/config
     chown $(id -u):$(id -g) $HOME/.kube/config
   when: support_kubecmd
 
@@ -47,12 +47,6 @@
             sleep 1
         fi
     done;
-
-# - name: change kubelet.conf's endpoint to web's endpoint
-#   lineinfile:
-#     dest: /etc/kubernetes/kubelet.conf
-#     regexp: "server:"
-#     line: "    server: https://{{ endpoint }}"  
 
 - name: restart kubelet
   systemd: 

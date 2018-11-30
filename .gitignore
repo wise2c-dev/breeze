@@ -3,7 +3,7 @@
 *.tar.bz2
 *.tgz
 *.pyc
-**/.DS_Store
+*/.DS_Store
 
 # ===== mian =====
 hosts

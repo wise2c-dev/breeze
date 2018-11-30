@@ -4,21 +4,13 @@ set -e
 
 path=`dirname $0`
 
-#kubernetes_repo="gcr.io/google_containers"
-# kubernetes_version=`docker run -it --rm \
-#                    -e KUBERNETES_VERSION=${1} \
-#                    -e KUBERNETES_COMPONENT=kube-apiserver \
-#                    ymian/kube-version:1.11`
-# dns_version=`docker run -it --rm \
-#                    -e KUBERNETES_VERSION=${1} \
-#                    -e KUBERNETES_COMPONENT=kube-dns \
-#                    ymian/kube-version:1.11`
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list > ${path}/k8s-images-list.txt
 
-kubernetes_repo="k8s.gcr.io"
-kubernetes_version="v1.11.3"
-dns_version="1.14.10"
+kubernetes_repo=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F '/' '{print $1}'`
+kubernetes_version=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F ':' '{print $2}'`
+dns_version=`cat ${path}/k8s-images-list.txt |grep coredns |awk -F ':' '{print $2}'`
+pause_version=`cat ${path}/k8s-images-list.txt |grep pause |awk -F ':' '{print $2}'`
 
-pause_version="3.1"
 echo "" >> ${path}/yat/all.yml.gotmpl
 echo "kubernetes_repo: ${kubernetes_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "kubernetes_version: ${kubernetes_version}" >> ${path}/yat/all.yml.gotmpl

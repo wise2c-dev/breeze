@@ -27,6 +27,7 @@ echo "pause_version: ${pause_version}" >> ${path}/yat/all.yml.gotmpl
 
 flannel_repo="quay.io/coreos"
 flannel_version="v0.10.0"
+
 echo "flannel_repo: ${flannel_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "flannel_version: ${flannel_version}-amd64" >> ${path}/yat/all.yml.gotmpl
 

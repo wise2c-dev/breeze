@@ -1,0 +1,9 @@
+[hosts]
+{{ range $v := .AllHosts -}}
+{{ $v.IP }} hostname={{ $v.HostName }}
+{{ end }}
+
+[workers]
+{{ range $v := .workernode.Hosts.self -}}
+{{ $v.IP }}
+{{ end }}

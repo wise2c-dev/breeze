@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-RUN apk install rsync
+RUN apk add rsync
 
 WORKDIR /workspace
 

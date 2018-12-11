@@ -8,7 +8,7 @@ path=`dirname $0`
 # version info.
 docker_version="1.13.1"
 registry_version="v1.5.1"
-etcd_version="1.13.1"
+etcd_version="3.0.17"
 kubernetes_version="v1.8.6"
 
 mv docker-playbook/version     docker-playbook/${docker_version}

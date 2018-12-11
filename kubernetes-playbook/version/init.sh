@@ -4,12 +4,10 @@ set -e
 
 path=`dirname $0`
 
-docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:v1.8.6 kubeadm config images list --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
-
-kubernetes_repo=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F '/' '{print $1}'`
-kubernetes_version=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F ':' '{print $2}'`
-dns_version=`cat ${path}/k8s-images-list.txt |grep kube-dns |awk -F ':' '{print $2}'`
-pause_version=`cat ${path}/k8s-images-list.txt |grep pause |awk -F ':' '{print $2}'`
+kubernetes_repo="gcr.io/google_containers"
+kubernetes_version="v1.8.6"
+dns_version="1.14.5"
+pause_version="3.0"
 
 echo "" >> ${path}/yat/all.yml.gotmpl
 echo "kubernetes_repo: ${kubernetes_repo}" >> ${path}/yat/all.yml.gotmpl

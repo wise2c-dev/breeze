@@ -25,10 +25,11 @@
   copy:
     src: '{{ item.src }}'
     dest: '{{ item.dest }}'
+    mode: preserve
   with_items:
   - { src: 'file/admin.conf', dest: '{{ path }}/' }
-  when: support_kubecmd 
-
+  when: support_kubecmd
+  
 - name: config kubectl
   shell: |
     mkdir -p $HOME/.kube/

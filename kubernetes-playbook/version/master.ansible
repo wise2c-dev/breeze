@@ -174,3 +174,23 @@
     cp /etc/kubernetes/admin.conf $HOME/.kube/config
     chown $(id -u):$(id -g) $HOME/.kube/config
 
+- name: apply flannel
+  shell: |
+    kubectl apply -f {{ path }}/kube-flannel.yml
+  run_once: true
+
+# - name: copy cadvisor tool
+#   copy:
+#     src: '{{ item.src }}'
+#     dest: '{{ item.dest }}'
+#   with_items:
+#   - { src: 'file/master-cadvisor.sh', dest: '{{ path }}/' }
+
+# - name: config cadvisor
+#   shell: |
+#     bash {{ path }}/master-cadvisor.sh
+
+- name: restart kubelet
+  systemd:
+    name: kubelet
+    state: restarted

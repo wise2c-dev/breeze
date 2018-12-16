@@ -1,17 +1,48 @@
-- name: clean docker
-  hosts: hosts
+- name: clean worker
+  hosts: all
   user: root
   tasks:
-  - name: uninstall docker
+  - name: kubeadm reset
+    shell: |
+      kubeadm reset -f
+    when: role == 'worker'
+
+  - name: kubectl delete node
+    shell: |
+      kubectl --kubeconfig /root/.kube/config delete node {% for vm_ip in hostvars[inventory_hostname].groups.worker %}{{ hostvars[vm_ip].hostname }} {% endfor %}
+    run_once: true
+    when: role == 'master'
+
+  - name: install kubernetes components
     yum:
+      state: absent
       disablerepo: '*'
       enablerepo: wise2c
-      state: absent
       name: '{{ item }}'
     with_items:
-    - rsync
-    - jq
-    - chrony
-    - docker-ce
-    - python-docker-py
-    - docker-compose
+    - kubernetes-cni-0.6.0
+    - kubectl-{{ kubernetes_version[1:] }}
+    - kubelet-{{ kubernetes_version[1:] }}
+    - kubeadm-{{ kubernetes_version[1:] }}
+    when: role == 'worker'
+    
+  - name: clean link
+    shell: |
+      ip link delete cni0
+      ip link delete flannel.1
+    ignore_errors: true
+    when: role == 'worker'
+
+  # - name: uninstall docker
+  #   yum:
+  #     disablerepo: '*'
+  #     enablerepo: wise2c
+  #     state: absent
+  #     name: '{{ item }}'
+  #   with_items:
+  #   - rsync
+  #   - jq
+  #   - chrony
+  #   - docker-ce
+  #   - python-docker-py
+  #   - docker-compose

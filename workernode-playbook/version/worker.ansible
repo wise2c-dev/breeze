@@ -1,0 +1,130 @@
+- name: check kubernetes
+  script: scripts/check_kubelet.sh
+  register: check_output
+
+- name: remove swapfile from /etc/fstab
+  mount:
+    name: swap
+    fstype: swap
+    state: absent
+
+- name: disable swap
+  command: swapoff -a
+
+- block:
+  - name: install kubernetes components
+    yum:
+      disablerepo: '*'
+      enablerepo: wise2c
+      update_cache: true
+      state: present
+      name: '{{ item }}'
+    with_items:
+    - kubernetes-cni-0.6.0
+    - kubectl-{{ kubernetes_version[1:] }}
+    - kubelet-{{ kubernetes_version[1:] }}
+    - kubeadm-{{ kubernetes_version[1:] }}
+
+  - name: install ipvsadm components
+    yum:
+      disablerepo: '*'
+      enablerepo: wise2c
+      update_cache: true
+      state: present
+      name: '{{ item }}'
+    with_items:
+    - ipvsadm
+    when: support_ipvs
+
+  - name: distribute kubelet config
+    template:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+    with_items:
+    - { src: 'template/kubelet.conf.j2', dest: '/etc/systemd/system/kubelet.service.d/wise2c-kubelet.conf' }
+
+  - name: reload & enable kubelet
+    systemd:
+      name: kubelet
+      daemon_reload: true
+      enabled: true
+
+  - name: set sysctl
+    sysctl:
+      name: '{{ item }}'
+      value: 1
+      state: present
+      reload: true
+    with_items:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+
+  - name: pull k8s pause images
+    docker_image:
+      name: '{{ registry_endpoint }}/{{ registry_project }}/{{ item.name }}'
+      tag: '{{ item.tag }}'
+      pull: true
+      state: present
+    with_items:
+    - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
+
+  - name: tag k8s pause images
+    docker_image:
+      name: '{{ item.repo }}/{{ item.name }}'
+      repository: '{{ kubernetes_repo }}/pause:{{ pause_version }}'
+      tag: '{{ item.tag }}'
+    with_items:
+    - { repo: '{{ registry_endpoint }}/{{ registry_project }}', name: 'pause', tag: '{{ pause_version }}' }
+
+  - name: ipvs config
+    copy:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+    with_items:
+    - { src: 'file/ipvs.modules', dest: '/etc/sysconfig/modules'}
+    when: support_ipvs
+
+  - name: setup ipvs
+    shell: |
+      chmod +x /etc/sysconfig/modules/ipvs.modules 
+      bash /etc/sysconfig/modules/ipvs.modules
+    when: support_ipvs
+
+  - name: setup node
+    shell: |
+      kubeadm join --token {{ token }} {{ endpoint }} --discovery-token-unsafe-skip-ca-verification {{ endpoint }}
+      #sed -i "s/.*server:.*/    server: https:\/\/{{ endpoint }}/g" /etc/kubernetes/kubelet.conf
+
+  - name: copy admin.conf
+    copy:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+      mode: preserve
+    with_items:
+    - { src: '../../kubernetes-playbook/{{ kubernetes_version }}/file/admin.conf', dest: '{{ kube_path }}/' }
+    when: support_kubecmd
+    
+  - name: config kubectl
+    shell: |
+      mkdir -p $HOME/.kube/
+      cp {{ kube_path }}/admin.conf $HOME/.kube/config
+      chown $(id -u):$(id -g) $HOME/.kube/config
+    when: support_kubecmd
+
+  - name: copy update_lb_addr.sh
+    copy:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+      mode: preserve
+    with_items:
+    - { src: 'file/update_lb_addr.sh', dest: '{{ kube_path }}/' }
+
+  - name: update the k8s lb address
+    shell: |
+      bash {{ kube_path }}/update_lb_addr.sh {{ endpoint }}
+
+  - name: restart kubelet
+    systemd: 
+      name: kubelet
+      state: restarted
+  when: check_output.stdout != 'true'

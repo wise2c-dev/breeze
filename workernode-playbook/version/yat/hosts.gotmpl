@@ -1,9 +1,14 @@
 [hosts]
 {{ range $v := .AllHosts -}}
-{{ $v.IP }} hostname={{ $v.HostName }}
+{{ $v.IP }} hostname={{ $v.HostName }} role=node
 {{ end }}
 
-[workers]
+[master]
+{{ range $v := .kubernetes.Hosts.master -}}
+{{ $v.IP }} hostname={{ $v.HostName }} role=master
+{{ end }}
+
+[worker]
 {{ range $v := .workernode.Hosts.self -}}
-{{ $v.IP }}
+{{ $v.IP }} hostname={{ $v.HostName }} role=worker
 {{ end }}

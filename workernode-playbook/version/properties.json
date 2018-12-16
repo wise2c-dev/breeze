@@ -6,13 +6,5 @@
         "type": "host",
         "default": "",
         "required": true
-    },
-    {
-        "variable": "format_hostname",
-        "label": "format host name",
-        "description": "format host name if you check this",
-        "type": "bool",
-        "default": "false",
-        "required": true
     }
 ]

@@ -16,6 +16,14 @@
         "required": false
     },
     {
+        "variable": "username",
+        "label": "registry username",
+        "description": "everyone can 'docker login' use this",
+        "type": "string",
+        "default": "admin",
+        "required": true
+    },
+    {
         "variable": "password",
         "label": "registry password",
         "description": "everyone can 'docker login' use this",

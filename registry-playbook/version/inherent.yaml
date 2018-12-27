@@ -3,9 +3,6 @@ endpoint: {{ if eq (print .Property.endpoint) "" -}}
           {{- else -}}
           {{ .Property.endpoint }}
           {{- end }}
-user: admin
-password: {{ if eq (print .Property.password) "" -}}
-          Harbor12345
-          {{- else -}}
-          {{ .Property.password }}
-          {{- end }}
+user: {{ .Property.username }}
+password: {{ .Property.password }}
+          

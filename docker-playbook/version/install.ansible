@@ -72,6 +72,7 @@
     - chrony
     - docker
     - python-docker-py
+    - python-jinja2
     - docker-compose
 
   - name: distribute chrony server config

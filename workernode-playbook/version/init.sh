@@ -5,7 +5,7 @@ set -e
 path=`dirname $0`
 version=$1
 
-docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:${version} kubeadm config images list --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
 
 kubernetes_repo=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F '/' '{print $1}'`
 kubernetes_version=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F ':' '{print $2}'`

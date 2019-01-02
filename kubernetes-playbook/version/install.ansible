@@ -57,6 +57,16 @@
       - ipvsadm
       when: support_ipvs
 
+    - name: copy prometheus k8s nodes fix scripts
+      copy:
+        src: '{{ item.src }}'
+        dest: '{{ item.dest }}'
+        mode: 0755
+      with_items:
+      - { src: 'file/prometheus-fix-master-nodes.sh', dest: '/var/tmp/wise2c/kubernetes/' }
+      - { src: 'file/prometheus-fix-worker-nodes.sh', dest: '/var/tmp/wise2c/kubernetes/' }
+      when: support_ipvs
+
     - name: distribute kubelet config
       template:
         src: '{{ item.src }}'

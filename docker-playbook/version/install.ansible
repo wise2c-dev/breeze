@@ -58,7 +58,14 @@
       dest: '{{ item.dest }}'
     with_items:
     - { src: 'template/wise2c.repo.j2', dest: '/etc/yum.repos.d/wise2c.repo' }
-  
+
+  - name: distribute ipvs bootload file
+    template:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+    with_items:
+    - { src: 'template/ipvs.conf.j2', dest: '/etc/modules-load.d/ipvs.conf' }
+
   - name: install docker
     yum:
       disablerepo: '*'
@@ -69,11 +76,11 @@
     with_items:
     - rsync
     - jq
-    - chrony
     - docker
     - python-docker-py
     - python-jinja2
     - docker-compose
+    - chrony
 
   - name: distribute chrony server config
     template:
@@ -99,7 +106,7 @@
       state: started
 
   - name: check docker
-    script: scripts/check_docker.sh {{ registry }}
+    script: scripts/check_docker.sh {{ harbor }}
     register: check_output
 
   - block:    

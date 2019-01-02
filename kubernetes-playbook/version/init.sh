@@ -11,25 +11,25 @@ kubernetes_version=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F
 dns_version=`cat ${path}/k8s-images-list.txt |grep kube-dns |awk -F ':' '{print $2}'`
 pause_version=`cat ${path}/k8s-images-list.txt |grep pause |awk -F ':' '{print $2}'`
 
-echo "" >> ${path}/yat/all.yml.gotmpl
-echo "kubernetes_repo: ${kubernetes_repo}" >> ${path}/yat/all.yml.gotmpl
-echo "kubernetes_version: ${kubernetes_version}" >> ${path}/yat/all.yml.gotmpl
-echo "dns_version: ${dns_version}" >> ${path}/yat/all.yml.gotmpl
-echo "pause_version: ${pause_version}" >> ${path}/yat/all.yml.gotmpl
+echo ""                                           >> ${path}/yat/all.yml.gotmpl
+echo "kubernetes_repo: ${kubernetes_repo}"        >> ${path}/yat/all.yml.gotmpl
+echo "kubernetes_version: ${kubernetes_version}"  >> ${path}/yat/all.yml.gotmpl
+echo "dns_version: ${dns_version}"                >> ${path}/yat/all.yml.gotmpl
+echo "pause_version: ${pause_version}"            >> ${path}/yat/all.yml.gotmpl
 
 flannel_repo="quay.io/coreos"
 flannel_version="v0.10.0"
 
-echo "flannel_repo: ${flannel_repo}" >> ${path}/yat/all.yml.gotmpl
-echo "flannel_version: ${flannel_version}-amd64" >> ${path}/yat/all.yml.gotmpl
+echo "flannel_repo: ${flannel_repo}"              >> ${path}/yat/all.yml.gotmpl
+echo "flannel_version: ${flannel_version}-amd64"  >> ${path}/yat/all.yml.gotmpl
 
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/${flannel_version}/Documentation/kube-flannel.yml \
     | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
 
 dashboard_repo=${kubernetes_repo}
 dashboard_version="v1.8.3"
-echo "dashboard_repo: ${dashboard_repo}" >> ${path}/yat/all.yml.gotmpl
-echo "dashboard_version: ${dashboard_version}" >> ${path}/yat/all.yml.gotmpl
+echo "dashboard_repo: ${dashboard_repo}"          >> ${path}/yat/all.yml.gotmpl
+echo "dashboard_version: ${dashboard_version}"    >> ${path}/yat/all.yml.gotmpl
 
 #curl -sS https://raw.githubusercontent.com/kubernetes/dashboard/${dashboard_version}/src/deploy/recommended/kubernetes-dashboard.yaml \
 #    | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2

@@ -1,200 +1,59 @@
-# Breeze - Deploy Kubernetes Cluster with Web UI
-[![Build Status](https://travis-ci.org/wise2c-devops/breeze.svg?branch=master)](https://travis-ci.org/wise2c-devops/breeze)
+# Breeze
+- Deploy a Production Ready Kubernetes Cluster with graphical interface
 
-Breeze - Deploy Kubernetes Cluster with Web UI
+[![Build Status](https://travis-ci.org/wise2c-devops/breeze.svg?branch=v1.12)](https://travis-ci.org/wise2c-devops/breeze)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/wise2c-devops/breeze/blob/master/LICENSE)
 
-欢迎使用睿云智合提供的图形化Kubernetes部署工具Breeze
+[English](./README.md) | [中文](./README-CN.md)
 
-使用该工具，将抹平普通用户学习复杂的kubeadm部署技能学习曲线，体会到一键式部署Kubernetes集群的乐趣！
+**Note**: Branches may be in an *unstable or even broken state* during development.
+Please use [releases](https://github.com/wise2c-devops/breeze/releases) instead of those branches in order to get stable binaries.
 
-适用操作系统为RHEL 7.4/7.5 或 CentOS 7.4/7.5
+Refer to **[User Guide](manual/BreezeManual.pdf)** for more details on how to use Breeze.
 
-Note:
-1. **请不要把Breeze所在的主机加入部署集群**
-2. **为了避免包冲突，请使用纯净的centos minimal安装出来的OS来部署集群**
+<img alt="Breeze" src="manual/BreezeLogo.png">
 
-**完整安装视频请在此处下载：**
+Project Breeze is an open source trusted solution allow you to create Kubernetes clusters on your internal, secure, cloud network with graphical user interface.
 
-https://pan.baidu.com/s/1X0ZYt48wfYNrSrH7vvEKiw
+## Features
+* **Easy to run**: Breeze combines all resources you need such as kubernetes components images, ansible playbooks for the deployment of kubernetes clusters into a single docker image (wise2c/playbook). It also works as a local yum repository server. You just need a linux server with docker and docker-compose installed to run Breeze.
 
-操作步骤如下：
+* **Simplified the process of kubernetes clusters deployment**: With a few simple commands, you can get Breeze running, and then finish all the other deployment processes by the graphical interface.
 
-1. 软件的使用非常简单，只需要在希望部署的Kubernetes版本分支中下载Breeze的docker-compose.yml文件（Master分支对应Latest Kubernetes版本）
-![Alt](./manual/KubernetesDeployUI-037.png)
-确保您的Linux主机已经安装好了docker以及docker-compose，具体步骤参考以下内容。
+* **Support offline deployment**: After 4 images (playbook, yum-repo, pagoda, deploy-ui) have been loaded on the deploy server, kubernetes clusters can be setup without internet access. Breeze works as a yum repository server and deploys a local Harbor registry and uses kubeadm to setup kubernetes clusters. All docker images will be pulled from the local Harbor registry. 
 
-（1）对部署机取消SELINUX设定及放开防火墙
+* **Support multi-cluster**: Breeze supports multiple kubernetes clusters deployment.
 
-```
-setenforce 0
-sed --follow-symlinks -i "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config
-firewall-cmd --set-default-zone=trusted
-firewall-cmd --complete-reload
-```
+* **Support high available architecture**:  With Breeze, you can setup kubernetes clusters with 3 master servers and 3 etcd servers combined with haproxy and keepalived. All worker nodes will use the virtual floating ip address to communicate with the master servers.
 
-（2）安装docker-compose命令
+## Architecture
+![Alt](./manual/Wise2C-Breeze-Architecture.png)
 
-```
-sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-```
+## Components
+- **breeze**: Ansible playbook for deployments of docker, harbor, haproxy+keepalived, etcd, kubernetes.
 
-```
-chmod +x /usr/local/bin/docker-compose
-```
+- **yum-repo**: Yum repository for docker, docker-compose, kubelet, kubectl, kubeadm, kubernetes-cni etc,. 
 
-(3) 安装docker-io 1.13.1
+- **deploy-ui**: Graphical user interface.
 
-```
-yum install docker
-```
+- **pagoda**: Server offers the API to operate Ansible playbooks.
 
-(4) 下载用于部署某个Kubernetes版本的docker-compose文件并使部署程序运行起来：
+- **kubeadm-version**: Get k8s components images version list by command "kubeadm config"
 
-[![asciicast](https://asciinema.org/a/vFYiMG3ptzdYPkS68rcuj4AKK.png)](https://asciinema.org/a/vFYiMG3ptzdYPkS68rcuj4AKK)
+## Install & Run
 
-例如：
+**System requirements:**
 
-```
-curl -L https://raw.githubusercontent.com/wise2c-devops/breeze/v1.11.2/docker-compose.yml -o docker-compose.yml
-```
+**Deploy server:** docker 1.13.1+ and docker-compose 1.12.0+ .
 
-```
-docker-compose up -d
-```
+**Kubernetes cluster server:** CentOS 7.4/7.5/7.6 is required and minimal installation mode is recommended. 
 
-如果一切正常，部署机的88端口将能够被正常访问。
+Refer to **[User Guide](manual/BreezeManual.pdf)** for more details on how to use Breeze.
 
-2. 在部署机上做好对集群内其它所有服务器的ssh免密登录，命令为：
+## Community
 
-   (1) 生成秘钥 ssh-keygen -t rsa
-   
-   (2) 针对目标服务器做ssh免密登录
-   
-       ssh-copy-id 192.168.9.11
-       
-       ssh-copy-id 192.168.9.12
-       
-       ssh-copy-id 192.168.9.13
-       
-       ...
+* **Slack:** Join Breeze's community for discussion and ask questions: [Breeze Slack](https://wise2c-breeze.slack.com/), channel: #general
 
-3. 打开浏览器，访问部署程序的图形界面，添加主机列表、添加服务角色并将加入的主机进行角色分配，然后开始部署：
+## License
 
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-001.png)
-
-点击 + 号添加一个集群：
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-002.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-003.png)
-
-点击“添加主机”，输入主机名、主机IP、描述信息（主机用途），点击确定。
-
-重复该步骤直至将集群所需的全部节点服务器加入：
-
-（k8s master服务器、k8s minion node服务器、registry服务器等等）：
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-004.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-005.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-006.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-007.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-008.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-009.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-010.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-011.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-012.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-013.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-014.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-015.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-016.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-017.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-018.png)
-
-点击“添加组件”按钮，对每个组件进行设置和分配服务器：
-
-（Docker角色、etcd角色、registry角色、kubernetes角色）
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-019.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-020.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-021.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-022.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-023.png)
-
-镜像仓库设置这里的registy entry point是指用户端访问镜像仓库的URL，一般可以直接写IP地址或写对应的域名：
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-024.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-025.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-026.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-027.png)
-
-kubernetes entry point是指高可用的一个设定值，如果生产环境有硬件或软件负载均衡指向这里的k8s master所有节点，那么就可以在这里填写负载均衡的统一入口地址。
-
-相对于昂贵的F5专业硬件设备，我们也可以使用HAProxy和Keepalived的组合轻松完成这个设置，详情请参考此处：
-
-https://github.com/wise2c-devops/haproxy-k8s
-
-https://github.com/wise2c-devops/keepalived-k8s
-
-例如下图的 192.168.9.101:6444 就是k8s集群高可用的统一入口，k8s的minion node会使用这个地址访问API Server。
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-028.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-029.png)
-
-点击“下一步”开始安装部署：
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-030.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-031.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-032.png)
-
-如果界面上所有角色图标全部变为绿色，则表示部署任务结束。可以登录任一k8s节点运行命令 kubectl get nodes 查看结果。
-
-以上例子是3台etcd、3台k8s master、3台k8s minion node、1台镜像仓库的环境。实际可以增减规模。
-
-Kubernetes Dashboard的访问入口我们采用了NodePort:30300的方式暴露端口，因此可以通过 https://node-ip:30300 来访问Dashboard页面。
-
-新版本Dashboard引入了验证模式，可以通过以下命令获取admin-user的访问令牌：
-
-```
-kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
-```
-
-将返回的token字串粘贴至登录窗口即可实现登录。
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-034.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-035.png)
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-036.png)
-
-
-###########################################################################################
-
-补充说明：
-
-对于Kubernetes集群的HA架构解决方案，我们暂时不放出图形化解决方案，待我们将其从内部版本剥离出来后再贡献给社区：
-
-![Alt text](https://raw.githubusercontent.com/wise2c-devops/breeze/master/manual/KubernetesDeployUI-033.png)
+Breeze is available under the [Apache 2 license](LICENSE).

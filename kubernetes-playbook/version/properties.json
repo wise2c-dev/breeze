@@ -39,7 +39,7 @@
     },
     {
         "variable": "kubecmd",
-        "label": "config support kubectl",
+        "label": "support kubectl",
         "description": "config support kubectl",
         "type": "bool",
         "default": false,

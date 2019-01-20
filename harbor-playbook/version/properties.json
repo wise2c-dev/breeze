@@ -16,14 +16,6 @@
         "required": false
     },
     {
-        "variable": "username",
-        "label": "harbor username",
-        "description": "everyone can 'docker login' use this",
-        "type": "string",
-        "default": "admin",
-        "required": true
-    },
-    {
         "variable": "password",
         "label": "harbor admin password",
         "description": "everyone can 'docker login' use this",

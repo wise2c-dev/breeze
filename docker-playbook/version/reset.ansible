@@ -2,7 +2,7 @@
   hosts: hosts
   user: root
   tasks:
-  - name: uninstall docker
+  - name: remove docker
     yum:
       disablerepo: '*'
       enablerepo: wise2c

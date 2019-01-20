@@ -1,4 +1,16 @@
 #!/bin/bash
+# Check if there are no api server cert files under /etc/kubernetes/pki
+
+set -e
+
+if [ -f "/etc/kubernetes/pki/apiserver.crt" ] || [ -f "/etc/kubernetes/pki/apiserver.key" ] ; then
+  echo "/etc/kubernetes/pki/apiserver.crt or /etc/kubernetes/pki/apiserver.key already exists!"
+  echo "Please execute command kubeadm reset -f if you want to reinstall the cluster."
+  exit 1
+fi
+
+set +e
+
 # Get host IP address and hostname
 WISE2C_IP_LABEL=$(cat /etc/hosts |grep -A 1 'BEGIN WISE2C DEPLOY MANAGED BLOCK' |grep -v '#' |grep -v '^\-\-' |wc |awk '{print $1}')
 

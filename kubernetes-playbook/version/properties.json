@@ -1,15 +1,23 @@
 [
     {
+        "variable": "AddWorkerNodesOnly",
+        "label": "Just add new worker nodes, do not reinstall this cluster",
+        "description": "Existing master nodes will not be updated. Please install docker for new worker nodes at first.",
+        "type": "bool",
+        "default": "false",
+        "required": true
+    },
+    {
         "variable": "master",
-        "label": "kubernetes master hosts",
-        "description": "hosts to setup kubernetes master",
+        "label": "kubernetes master nodes",
+        "description": "hosts to setup kubernetes master nodes",
         "type": "host",
         "required": false
     },
     {
-        "variable": "node",
-        "label": "kubenetes node hosts",
-        "description": "hosts to setup kubernetes node",
+        "variable": "worker",
+        "label": "kubenetes worker nodes",
+        "description": "hosts to setup kubernetes worker nodes",
         "type": "host",
         "required": false
     },
@@ -20,29 +28,5 @@
         "type": "string",
         "default": "",
         "required": false
-    },
-    {
-        "variable": "wise2cdns",
-        "label": "wise2cdns",
-        "description": "kubernetes support wise2c-dns",
-        "type": "bool",
-        "default": true,
-        "required": true
-    },
-    {
-        "variable": "ipvs",
-        "label": "kube-proxy support ipvs",
-        "description": "kube-proxy support ipvs",
-        "type": "bool",
-        "default": false,
-        "required": true
-    },
-    {
-        "variable": "kubecmd",
-        "label": "support kubectl",
-        "description": "config support kubectl",
-        "type": "bool",
-        "default": false,
-        "required": true
     }
 ]

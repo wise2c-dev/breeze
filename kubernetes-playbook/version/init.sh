@@ -4,27 +4,28 @@ set -e
 
 path=`dirname $0`
 
-docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
+k8s_version=`cat ${path}/components-version.txt |grep "Kubernetes" |awk '{print $3}'`
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:v1.11.x kubeadm config images list --kubernetes-version ${k8s_version} --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
 
 kubernetes_repo=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F '/' '{print $1}'`
 kubernetes_version=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F ':' '{print $2}'`
 dns_version=`cat ${path}/k8s-images-list.txt |grep kube-dns |awk -F ':' '{print $2}'`
 pause_version=`cat ${path}/k8s-images-list.txt |grep pause |awk -F ':' '{print $2}'`
-
 echo ""                                           >> ${path}/yat/all.yml.gotmpl
 echo "kubernetes_repo: ${kubernetes_repo}"        >> ${path}/yat/all.yml.gotmpl
 echo "kubernetes_version: ${kubernetes_version}"  >> ${path}/yat/all.yml.gotmpl
 echo "dns_version: ${dns_version}"                >> ${path}/yat/all.yml.gotmpl
 echo "pause_version: ${pause_version}"            >> ${path}/yat/all.yml.gotmpl
 
+
 flannel_repo="quay.io/coreos"
 flannel_version="v0.10.0"
-
 echo "flannel_repo: ${flannel_repo}"              >> ${path}/yat/all.yml.gotmpl
 echo "flannel_version: ${flannel_version}-amd64"  >> ${path}/yat/all.yml.gotmpl
 
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/${flannel_version}/Documentation/kube-flannel.yml \
     | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
+
 
 dashboard_repo=${kubernetes_repo}
 dashboard_version="v1.8.3"
@@ -69,23 +70,31 @@ echo "=== save kubernetes images success ==="
 
 echo "=== pulling flannel image ==="
 docker pull ${flannel_repo}/flannel:${flannel_version}-amd64
-echo "=== pull flannel image success ==="
+echo "=== flannel image is pulled successfully ==="
+
 echo "=== saving flannel image ==="
 docker save ${flannel_repo}/flannel:${flannel_version}-amd64 \
     > ${path}/file/flannel.tar
 rm ${path}/file/flannel.tar.bz2 -f
 bzip2 -z --best ${path}/file/flannel.tar
-echo "=== save flannel image success ==="
+echo "=== flannel image is saved successfully ==="
 
-echo "=== pulling dashboard image ==="
+echo "=== pulling kubernetes dashboard images ==="
 docker pull ${dashboard_repo}/kubernetes-dashboard-amd64:${dashboard_version}
-echo "=== pull dashboard image success ==="
-echo "=== saving dashboard image ==="
+#docker pull k8s.gcr.io/heapster-amd64:v1.5.4
+#docker pull k8s.gcr.io/heapster-influxdb-amd64:v1.5.2
+#docker pull k8s.gcr.io/heapster-grafana-amd64:v5.0.4
+echo "=== kubernetes dashboard images are pulled successfully ==="
+
+echo "=== saving kubernetes dashboard images ==="
 docker save ${dashboard_repo}/kubernetes-dashboard-amd64:${dashboard_version} \
     > ${path}/file/dashboard.tar
+#docker save k8s.gcr.io/heapster-amd64:v1.5.4 k8s.gcr.io/heapster-influxdb-amd64:v1.5.2 k8s.gcr.io/heapster-grafana-amd64:v5.0.4 -o ${path}/file/heapster.tar
 rm ${path}/file/dashboard.tar.bz2 -f
+#rm ${path}/file/heapster.tar.bz2 -f
 bzip2 -z --best ${path}/file/dashboard.tar
-echo "=== save dashboard image success ==="
+#bzip2 -z --best ${path}/file/heapster.tar
+echo "=== kubernetes dashboard images are saved successfully ==="
 
 echo "=== download cfssl tools ==="
 export CFSSL_URL=https://pkg.cfssl.org/R1.2

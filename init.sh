@@ -5,7 +5,7 @@ set -e
 path=`dirname $0`
 
 
-docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:v1.11.x kubeadm config images list --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
 
 
 # version info.
@@ -43,7 +43,7 @@ do
         do
             echo ${version}
             if [ -f ${path}/${dir}/${version}/init.sh ]; then
-                cp   ${path}/components-version.txt    ${path}/${dir}/${version}/
+                cp ${path}/components-version.txt ${path}/${dir}/${version}/
                 bash ${path}/${dir}/${version}/init.sh ${version}
             fi
         done

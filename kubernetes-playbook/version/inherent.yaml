@@ -3,3 +3,4 @@ endpoint: {{ if eq (print .Property.endpoint) "" -}}
           {{- else -}}
           {{ .Property.endpoint }}
           {{- end }}
+add_worker_node_only: {{ .Property.AddWorkerNodesOnly }}

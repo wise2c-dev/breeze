@@ -5,6 +5,9 @@
 *.pyc
 .DS_Store/
 .github/
+.vscode/
+.git
+.idea/
 
 # ===== mian =====
 hosts

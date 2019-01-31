@@ -10,11 +10,11 @@ before_install:
 
 script:
 - bash init.sh
-- docker build -t wisecloud/playbook:v1.11.7 .
+- docker build -t wisecloud/playbook:$VERSION .
 
 deploy:
   provider: script
-  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push wisecloud/playbook:v1.11.7
+  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push wisecloud/playbook:$VERSION
   on:
     all_branches: true
     #condition: "$TRAVIS_BRANCH =~ ^v[0-9]+\\.[0-9]+(\\.[0-9]+)?(-\\S*)?$"

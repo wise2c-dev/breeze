@@ -9,7 +9,7 @@ docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:v1.11.7 kubeadm
 
 
 # version info.
-docker_version=1.13.1-75
+docker_version=1.13.1-91
 harbor_version=1.5.1
 etcd_version=`cat ${path}/k8s-images-list.txt |grep etcd |awk -F ':' '{print $2}'`
 haproxy_version=1.8.14

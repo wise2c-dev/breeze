@@ -23,12 +23,14 @@ else
     GrepStr=$(ip a |grep "inet $IP_Addresses")
     if [ -n "$GrepStr" ]; then
       HOST_IP=$IP_Addresses
-      HOST_NAME=$(cat /etc/hosts |grep -A 1 'BEGIN WISE2C DEPLOY MANAGED BLOCK' |grep -v '#' |grep -v '^\-\-' |grep $HOST_IP |awk '{print $2}')
+      HOST_NAME=$(cat /etc/hosts |grep -A 1 'BEGIN WISE2C DEPLOY MANAGED BLOCK' |grep -v '#' |grep -v '^\-\-' |grep -w $HOST_IP |awk '{print $2}')
     fi
   done;
 fi
 
 HOST_VIP=`cat /var/tmp/wise2c/kubernetes/kubeadm.conf | grep -A 1 SAN | tail -1 | awk '{print $2}'`
+
+set -e
 
 # K8S apiserver certificate
 cd /var/tmp/wise2c/kubernetes

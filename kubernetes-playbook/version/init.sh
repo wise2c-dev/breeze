@@ -43,7 +43,7 @@ echo "dashboard_version: ${dashboard_version}"    >> ${path}/yat/all.yml.gotmpl
 #curl -sS https://raw.githubusercontent.com/kubernetes/dashboard/${dashboard_version}/src/deploy/recommended/kubernetes-dashboard.yaml \
 #    | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
 
-curl -sSL https://github.com/wise2c-devops/breeze/raw/v1.11/kubernetes-playbook/kubernetes-dashboard-wise2c.yaml.j2 \
+curl -sSL https://github.com/wise2c-devops/breeze/raw/v1.11/kubernetes-playbook/kubernetes-dashboard.yaml.j2 \
     | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
     
 echo "=== pulling kubernetes images ==="

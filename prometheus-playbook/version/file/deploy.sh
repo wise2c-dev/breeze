@@ -16,6 +16,8 @@ for file in $(cat images-list.txt); do docker push $MyImageRepositoryIP/$MyImage
 echo 'Images pushed.'
 
 ######### Update deploy yaml files #########
+rm -rf prometheus-operator-$PrometheusOperatorVersion
+tar zxvf prometheus-operator-v$PrometheusOperatorVersion-origin.tar.gz
 cd prometheus-operator-$PrometheusOperatorVersion
 sed -i "s/quay.io\/coreos/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "quay.io/coreos" ./ |grep .yaml)
 sed -i "s/quay.io\/prometheus/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "quay.io/prometheus" ./ |grep .yaml)
@@ -31,8 +33,8 @@ sed -i "s/ImageRepositoryIP/$MyImageRepositoryIP/g" temp.txt
 sed -i '23 r temp.txt' prometheus-operator-$PrometheusOperatorVersion/contrib/kube-prometheus/manifests/0prometheus-operator-deployment.yaml
 rm -f temp.txt
 
-# Maybe no need for other version
-sed -i "s/0.25.0/$PrometheusOperatorVersion/g" prometheus-operator-$PrometheusOperatorVersion/contrib/kube-prometheus/manifests/0prometheus-operator-deployment.yaml
+# Fix issue 2291 of prometheus operator
+sed -i "s/0.27.0/$PrometheusOperatorVersion/g" prometheus-operator-$PrometheusOperatorVersion/contrib/kube-prometheus/manifests/0prometheus-operator-deployment.yaml
 
 # Wait for CRDs to be ready, we need to split all yaml files to two parts
 cd prometheus-operator-$PrometheusOperatorVersion/contrib/kube-prometheus/

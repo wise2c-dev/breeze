@@ -7,15 +7,15 @@ path=`dirname $0`
 PrometheusOperatorVersion=`cat ${path}/components-version.txt |grep "PrometheusOperator" |awk '{print $3}'`
 
 echo "" >> ${path}/group_vars/prometheus.yml.gotmpl
-echo "operator_version: ${PrometheusOperatorVersion}" >> ${path}/group_vars/prometheus.yml.gotmpl
+echo "operator_version: ${PrometheusOperatorVersion}" >> ${path}/group_vars/prometheus.yml
 
 curl -L -o ${path}/file/prometheus-operator-v$PrometheusOperatorVersion-origin.tar.gz https://github.com/coreos/prometheus-operator/archive/v$PrometheusOperatorVersion.tar.gz
 
 cd ${path}/file/
 tar zxf prometheus-operator-v$PrometheusOperatorVersion-origin.tar.gz
 
-# Maybe no need for other version
-sed -i "s/0.25.0/$PrometheusOperatorVersion/g" prometheus-operator-$PrometheusOperatorVersion/contrib/kube-prometheus/manifests/0prometheus-operator-deployment.yaml
+# Fix issue 2291 of prometheus operator
+sed -i "s/0.27.0/$PrometheusOperatorVersion/g" prometheus-operator-$PrometheusOperatorVersion/contrib/kube-prometheus/manifests/0prometheus-operator-deployment.yaml
 
 for file in $(grep -lr "quay.io/coreos" prometheus-operator-$PrometheusOperatorVersion/contrib/kube-prometheus/manifests/); do cat $file |grep "quay.io/coreos" ; done > image-lists-temp.txt
 for file in $(grep -lr "grafana/grafana" prometheus-operator-$PrometheusOperatorVersion/contrib/kube-prometheus/manifests/); do cat $file |grep "grafana/grafana" ; done >> image-lists-temp.txt

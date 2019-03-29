@@ -1,5 +1,7 @@
 apiVersion: kubeadm.k8s.io/v1alpha1
 kind: MasterConfiguration
+api:
+  advertiseAddress: 127.0.0.1
 etcd:
   endpoints:
 {% for host in groups['etcd'] %}
@@ -21,5 +23,8 @@ schedulerExtraArgs:
 apiServerCertSANs:
   - {{ endpoint.split(':')[0] }}
 imageRepository: {{ registry_endpoint }}/{{ registry_project }}
+kubeProxy:
+  config:
+    mode: ipvs
 featureGates:
   CoreDNS: false

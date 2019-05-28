@@ -66,6 +66,7 @@
     - docker-compose
     - chrony
     - ipvsadm
+    - nfs-utils
 
   - name: distribute chrony server config
     template:

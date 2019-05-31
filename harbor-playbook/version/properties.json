@@ -18,7 +18,7 @@
     {
         "variable": "password",
         "label": "harbor admin password",
-        "description": "Password for the Harbor admin account",
+        "description": "everyone can 'docker login' use this",
         "type": "string",
         "default": "Harbor12345",
         "required": true

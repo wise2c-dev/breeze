@@ -17,16 +17,16 @@
     },
     {
         "variable": "nic",
-        "label": "NIC",
-        "description": "Create virtual IP on this network interface card",
+        "label": "网卡",
+        "description": "在此网卡上创建VIP",
         "type": "string",
         "default": "",
         "required": true
     },
     {
         "variable": "netMask",
-        "label": "Subnet Host Bits",
-        "description": "Please input subnet host bits like 16 for 255.255.0.0 or 24 for 255.255.255.0",
+        "label": "网卡掩码",
+        "description": "",
         "type": "int",
         "default": "",
         "required": true

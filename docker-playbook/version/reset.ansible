@@ -11,3 +11,8 @@
     with_items:
     - docker-ce
     - docker-compose
+    - rsync
+    - jq
+    - chrony
+    - python-docker-py
+    - python-jinja2

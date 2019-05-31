@@ -29,17 +29,16 @@ pause_version=`cat ${path}/k8s-images-list.txt |grep pause |awk -F ':' '{print $
 echo "" >> ${path}/inherent.yaml
 echo "version: ${kubernetes_version}" >> ${path}/inherent.yaml
 
-echo ""                                           >> ${path}/yat/all.yml.gotmpl
-echo "kubernetes_repo: ${kubernetes_repo}"        >> ${path}/yat/all.yml.gotmpl
-echo "kubernetes_version: ${kubernetes_version}"  >> ${path}/yat/all.yml.gotmpl
-echo "dns_version: ${dns_version}"                >> ${path}/yat/all.yml.gotmpl
-echo "pause_version: ${pause_version}"            >> ${path}/yat/all.yml.gotmpl
-
+echo "" >> ${path}/yat/all.yml.gotmpl
+echo "kubernetes_repo: ${kubernetes_repo}" >> ${path}/yat/all.yml.gotmpl
+echo "kubernetes_version: ${kubernetes_version}" >> ${path}/yat/all.yml.gotmpl
+echo "dns_version: ${dns_version}" >> ${path}/yat/all.yml.gotmpl
+echo "pause_version: ${pause_version}" >> ${path}/yat/all.yml.gotmpl
 
 flannel_repo="quay.io/coreos"
 flannel_version="v0.11.0"
-echo "flannel_repo: ${flannel_repo}"              >> ${path}/yat/all.yml.gotmpl
-echo "flannel_version: ${flannel_version}-amd64"  >> ${path}/yat/all.yml.gotmpl
+echo "flannel_repo: ${flannel_repo}" >> ${path}/yat/all.yml.gotmpl
+echo "flannel_version: ${flannel_version}-amd64" >> ${path}/yat/all.yml.gotmpl
 
 #The image tag is incorrect in https://raw.githubusercontent.com/coreos/flannel/v0.11.0/Documentation/kube-flannel.yml
 #curl -sSL https://raw.githubusercontent.com/coreos/flannel/${flannel_version}/Documentation/kube-flannel.yml \
@@ -47,11 +46,11 @@ echo "flannel_version: ${flannel_version}-amd64"  >> ${path}/yat/all.yml.gotmpl
 
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml \
    | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
-   
+
 dashboard_repo=${kubernetes_repo}
 dashboard_version="v1.10.1"
-echo "dashboard_repo: ${dashboard_repo}"          >> ${path}/yat/all.yml.gotmpl
-echo "dashboard_version: ${dashboard_version}"    >> ${path}/yat/all.yml.gotmpl
+echo "dashboard_repo: ${dashboard_repo}" >> ${path}/yat/all.yml.gotmpl
+echo "dashboard_version: ${dashboard_version}" >> ${path}/yat/all.yml.gotmpl
 
 #curl -sS https://raw.githubusercontent.com/kubernetes/dashboard/${dashboard_version}/src/deploy/recommended/kubernetes-dashboard.yaml \
 #    | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
@@ -59,19 +58,6 @@ echo "dashboard_version: ${dashboard_version}"    >> ${path}/yat/all.yml.gotmpl
 curl -sSL https://github.com/wise2c-devops/breeze/raw/v1.13/kubernetes-playbook/kubernetes-dashboard-wise2c.yaml.j2 \
     | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
     
-echo "=== pulling kubernetes images ==="
-for IMAGES in $(cat ${path}/k8s-images-list.txt |grep -v etcd); do
-  docker pull ${IMAGES}
-done
-echo "=== pull kubernetes images success ==="
-
-echo "=== saving kubernetes images ==="
-mkdir -p ${path}/file
-docker save $(cat ${path}/k8s-images-list.txt |grep -v etcd) -o ${path}/file/k8s.tar
-rm ${path}/file/k8s.tar.bz2 -f
-bzip2 -z --best ${path}/file/k8s.tar
-echo "=== save kubernetes images success ==="
-
 echo "=== pulling flannel image ==="
 docker pull ${flannel_repo}/flannel:${flannel_version}-amd64
 echo "=== flannel image is pulled successfully ==="
@@ -110,7 +96,7 @@ tar zcvf ${path}/file/cfssl-tools.tar.gz cfssl cfssl-certinfo cfssljson
 echo "=== cfssl tools is download successfully ==="
 
 helm_repo="gcr.io/kubernetes-helm"
-helm_version="v2.13.1"
+helm_version="v2.14.0"
 echo "helm_repo: ${helm_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "helm_version: ${helm_version}" >> ${path}/yat/all.yml.gotmpl
 

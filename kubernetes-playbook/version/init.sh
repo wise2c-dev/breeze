@@ -60,31 +60,14 @@ curl -sSL https://github.com/wise2c-devops/breeze/raw/v1.13/kubernetes-playbook/
     | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
     
 echo "=== pulling kubernetes images ==="
-docker pull ${kubernetes_repo}/kube-apiserver-amd64:${kubernetes_version}
-docker pull ${kubernetes_repo}/kube-controller-manager-amd64:${kubernetes_version}
-docker pull ${kubernetes_repo}/kube-scheduler-amd64:${kubernetes_version}
-docker pull ${kubernetes_repo}/kube-proxy-amd64:${kubernetes_version}
-docker pull ${kubernetes_repo}/pause:${pause_version}
-docker pull ${kubernetes_repo}/k8s-dns-sidecar-amd64:${dns_version}
-docker pull ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version}
-docker pull ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version}
-#nathon's wise2c-dns. registry.cn-hangzhou.aliyuncs.com/wise2c-dev/k8s-dns-kube-dns-amd64:1.14.16
-#zhouyi's wise2c-dns merge 1.14.10 and nathon's code.
-docker pull wisecloud/k8s-dns-kube-dns-amd64:1.14.10.1
-
+for IMAGES in $(cat ${path}/k8s-images-list.txt |grep -v etcd); do
+  docker pull ${IMAGES}
+done
 echo "=== pull kubernetes images success ==="
+
 echo "=== saving kubernetes images ==="
 mkdir -p ${path}/file
-docker save ${kubernetes_repo}/kube-apiserver-amd64:${kubernetes_version} \
-    ${kubernetes_repo}/kube-controller-manager-amd64:${kubernetes_version} \
-    ${kubernetes_repo}/kube-scheduler-amd64:${kubernetes_version} \
-    ${kubernetes_repo}/kube-proxy-amd64:${kubernetes_version} \
-    ${kubernetes_repo}/pause:${pause_version} \
-    ${kubernetes_repo}/k8s-dns-sidecar-amd64:${dns_version} \
-    ${kubernetes_repo}/k8s-dns-kube-dns-amd64:${dns_version} \
-    ${kubernetes_repo}/k8s-dns-dnsmasq-nanny-amd64:${dns_version} \
-    wisecloud/k8s-dns-kube-dns-amd64:1.14.10.1 \
-    > ${path}/file/k8s.tar
+docker save $(cat ${path}/k8s-images-list.txt |grep -v etcd) -o ${path}/file/k8s.tar
 rm ${path}/file/k8s.tar.bz2 -f
 bzip2 -z --best ${path}/file/k8s.tar
 echo "=== save kubernetes images success ==="

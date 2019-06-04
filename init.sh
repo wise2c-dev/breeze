@@ -19,7 +19,7 @@ mv ${path}/harbor-playbook/version ${path}/harbor-playbook/v${harbor_version}
 mv ${path}/docker-playbook/version ${path}/docker-playbook/${docker_version}-CE
 mv ${path}/loadbalancer-playbook/version ${path}/loadbalancer-playbook/${loadbalancer_version}
 mv ${path}/prometheus-playbook/version ${path}/prometheus-playbook/v${prometheus_version}
-mv ${path}/istio-playbook/version ${path}/istio-playbook/v${istio_version}
+mv ${path}/istio-playbook/version-images ${path}/istio-playbook/v${istio_version}-images
 
 docker run --rm --name=kubeadm-version wise2c/kubeadm-version:v${kubernetes_version} kubeadm config images list --kubernetes-version ${kubernetes_version} > ${path}/k8s-images-list.txt
 

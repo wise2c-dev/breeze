@@ -15,9 +15,7 @@ prometheus_operator_version=0.29.0
 istio_version=1.1.6
 
 mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/v${kubernetes_version}
-mv ${path}/harbor-playbook/version ${path}/harbor-playbook/v${harbor_version}
 mv ${path}/docker-playbook/version ${path}/docker-playbook/${docker_version}-CE
-mv ${path}/loadbalancer-playbook/version ${path}/loadbalancer-playbook/${loadbalancer_version}
 mv ${path}/prometheus-playbook/version ${path}/prometheus-playbook/v${prometheus_version}
 mv ${path}/istio-playbook/version-images ${path}/istio-playbook/v${istio_version}-images
 

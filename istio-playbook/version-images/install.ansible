@@ -19,18 +19,16 @@
       src: '{{ item.src }}'
       dest: '{{ item.dest }}'
     with_items:
-    - { src: 'file/istio-{{ istio_version }}-origin.tar.gz', dest: '{{ path }}' }
     - { src: 'file/istio-images-{{ istio_version }}.tar.bz2', dest: '{{ path }}' }
     run_once: true
 
-  - name: copy istio deploy and reset script
+  - name: copy istio push script
     copy:
       src: '{{ item.src }}'
       dest: '{{ item.dest }}'
       mode: 0755
     with_items:
-    - { src: 'file/deploy.sh', dest: '{{ path }}' }
-    - { src: 'file/remove.sh', dest: '{{ path }}' }
+    - { src: 'file/push.sh', dest: '{{ path }}' }
     run_once: true
 
   - name: copy istio deploy script dependance file
@@ -46,7 +44,7 @@
   - name: load istio images
     docker_image:
       load_path: '{{ path }}/{{ item }}'
-      name: prometheus
+      name: istio
       timeout: 600
     with_items:
     - istio-images-{{ istio_version }}.tar.bz2

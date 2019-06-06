@@ -3,7 +3,7 @@
 set -e
 
 MyImageRepositoryIP=`cat harbor-address.txt`
-MyImageRepositoryProject=library
+MyImageRepositoryProject=wise2c
 IstioVersion=`cat components-version.txt |grep "Istio Version" |awk '{print $3}'`
 
 ######### Push images #########

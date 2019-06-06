@@ -12,12 +12,11 @@ keepalived_version=1.3.5
 loadbalancer_version=HAProxy-${haproxy_version}_Keepalived-${keepalived_version}
 prometheus_version=2.7.1
 prometheus_operator_version=0.29.0
-istio_version=1.1.6
+istio_version=1.1.7
 
 mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/v${kubernetes_version}
 mv ${path}/docker-playbook/version ${path}/docker-playbook/${docker_version}-CE
 mv ${path}/prometheus-playbook/version ${path}/prometheus-playbook/v${prometheus_version}
-mv ${path}/istio-playbook/version-images ${path}/istio-playbook/v${istio_version}-images
 
 docker run --rm --name=kubeadm-version wise2c/kubeadm-version:v${kubernetes_version} kubeadm config images list --kubernetes-version ${kubernetes_version} > ${path}/k8s-images-list.txt
 
@@ -31,7 +30,7 @@ echo "HAProxy Version: ${haproxy_version}" >> ${path}/components-version.txt
 echo "Keepalived Version: ${keepalived_version}" >> ${path}/components-version.txt
 echo "Prometheus Version: ${prometheus_version}" >> ${path}/components-version.txt
 echo "PrometheusOperator Version: ${prometheus_operator_version}" >> ${path}/components-version.txt
-echo "Istio Version: ${istio_version}" >> ${path}/components-version.txt
+echo "Istio Version: ${istio_version}"  >> ${path}/components-version.txt
 
 for dir in `ls ${path}`
 do

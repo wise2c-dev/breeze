@@ -4,3 +4,11 @@ registry_user: {{ .harbor.Inherent.user }}
 registry_password: {{ .harbor.Inherent.password }}
 registry_project: library
 add_worker_node_only: {{ .kubernetes.Property.AddWorkerNodesOnly }}
+
+{{ if .etcd.Hosts -}}
+etcd_ips:
+{{ range $idx, $v := .etcd.Hosts.self -}}
+- name: etcd{{ $idx }}
+  ip: {{ $v.IP }}
+{{ end }}
+{{- end }}

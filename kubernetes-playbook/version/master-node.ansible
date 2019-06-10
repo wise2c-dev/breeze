@@ -216,3 +216,30 @@
   shell: ./prometheus-fix-master-nodes.sh
   args:
     chdir: '{{ path }}'
+
+- name: distribute etcd-exporter config
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+  - { src: 'template/etcd-exporter.yml.j2', dest: '{{ path }}/etcd-exporter.yml' }
+  run_once: true
+
+- name: apply etcd-exporter config
+  shell: |
+    kubectl -n kube-system apply -f {{ path }}/etcd-exporter.yml
+  run_once: true
+
+- name: copy exclusive-patch.sh
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+  - { src: 'file/exclusive-patch.sh', dest: '{{ path }}/' }
+  run_once: true
+
+- name: append the tolerations.
+  shell: |
+    chmod +x {{ path }}/exclusive-patch.sh
+    sh {{ path }}/exclusive-patch.sh
+  run_once: true

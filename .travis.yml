@@ -4,7 +4,7 @@ services:
 - docker
 
 before_install:
-- VERSION=v1.6.5-cmft
+- VERSION=v1.11.8
 - sudo apt-get -qq update
 - sudo apt-get install -y bzip2
 

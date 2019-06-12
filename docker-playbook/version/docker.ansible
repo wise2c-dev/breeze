@@ -114,6 +114,7 @@
       dest: '{{ item.dest }}'
     with_items:
     - { src: 'template/daemon.json.j2', dest: '/etc/docker/daemon.json' }
+    when: not harbor_https
 
   - name: reload & restart docker
     systemd:

@@ -33,4 +33,4 @@
       image: '{{ image }}'
       command: '{{ command }}'
       volumes:
-      - /data/etcd:/var/lib/etcd
+      - /data/wisecloud/etcd:/var/lib/etcd

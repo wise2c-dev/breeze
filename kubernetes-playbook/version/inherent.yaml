@@ -3,3 +3,4 @@ endpoint: {{ if eq (print .Property.endpoint) "" -}}
           {{- else -}}
           {{ .Property.endpoint }}
           {{- end }}
+resource_reserved: {{ .Property.resource_reserved }}

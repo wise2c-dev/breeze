@@ -4,6 +4,7 @@ registry_user: {{ .harbor.Inherent.user }}
 registry_password: {{ .harbor.Inherent.password }}
 registry_project: library
 add_worker_node_only: {{ .kubernetes.Property.AddWorkerNodesOnly }}
+resource_reserved: {{ .kubernetes.Inherent.resource_reserved }}
 
 {{ if .etcd.Hosts -}}
 etcd_ips:

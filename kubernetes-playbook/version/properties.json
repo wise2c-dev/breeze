@@ -28,5 +28,13 @@
         "type": "string",
         "default": "",
         "required": false
+    },
+    {
+        "variable": "resource_reserved",
+        "label": "k8s resource reserved ",
+        "description": "cpu: 500m, mem: 500Mi",
+        "type": "bool",
+        "default": false,
+        "required": true
     }
 ]

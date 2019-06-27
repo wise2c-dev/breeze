@@ -17,7 +17,25 @@
   - name: disable swap
     command: swapoff -a
 
+  - name: disable swapoff permanently
+    replace:
+      path: /etc/fstab
+      regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+      replace: '#\1\2\3swap\4'
+      backup: yes
+
   - block:
+    - name: load ipvs
+      shell: |
+        modprobe ip_vs
+        modprobe ip_vs_rr
+        modprobe ip_vs_wrr
+        modprobe ip_vs_sh
+
+    - name: clean yum cache
+      shell: |
+        yum clean all
+        
     - name: install kubernetes components
       yum:
         disablerepo: '*'
@@ -26,7 +44,7 @@
         state: present
         name: '{{ item }}'
       with_items:
-      - kubernetes-cni-0.6.0
+      - kubernetes-cni
       - kubectl-{{ kubernetes_version[1:] }}
       - kubelet-{{ kubernetes_version[1:] }}
       - kubeadm-{{ kubernetes_version[1:] }}

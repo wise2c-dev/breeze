@@ -212,6 +212,13 @@
     kubectl apply -f {{ path }}/kubernetes-dashboard.yml
   run_once: true
 
+- name: update kube-proxy HA setting
+  shell: |
+    kubectl -n kube-system get cm kube-proxy -o yaml > {{ path }}/kube-proxy-cm.yaml
+    sed -i "s#.*server:.*#        server: https://{{ endpoint }}#g" {{ path }}/kube-proxy-cm.yaml
+    kubectl -n kube-system apply -f {{ path }}/kube-proxy-cm.yaml
+  run_once: true
+
 - name: execute prometheus-fix-master-nodes script
   shell: ./prometheus-fix-master-nodes.sh
   args:

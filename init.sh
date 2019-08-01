@@ -6,7 +6,7 @@ path=`dirname $0`
 
 
 # version info.
-docker_version=1.13.1-91
+docker_version=1.13.1-96
 kubernetes_version=1.11.8
 docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:v${kubernetes_version} kubeadm config images list --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
 etcd_version=`cat ${path}/k8s-images-list.txt |grep etcd |awk -F ':' '{print $2}'`

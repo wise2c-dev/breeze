@@ -17,7 +17,7 @@ mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/${kubernetes_
 mv ${path}/docker-playbook/version ${path}/docker-playbook/${docker_version}-CE
 mv ${path}/istio-playbook/version-images ${path}/istio-playbook/v${istio_version}-images
 
-docker run --rm --name=kubeadm-version wise2c/kubeadm-version:${kubernetes_version} kubeadm config images list --kubernetes-version ${kubernetes_version:1} > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:${kubernetes_version} kubeadm config images list --kubernetes-version ${kubernetes_version:1} > ${path}/k8s-images-list.txt
 
 etcd_version=`cat ${path}/k8s-images-list.txt |grep etcd |awk -F ':' '{print $2}'`
 mv etcd-playbook/version-by-kubeadm etcd-playbook/${etcd_version}

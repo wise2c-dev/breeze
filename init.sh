@@ -4,23 +4,25 @@ set -e
 
 path=`dirname $0`
 
-kubernetes_version=1.13.8
-docker_version=18.06.3
-haproxy_version=1.8.14
-keepalived_version=1.3.5
+#curl -sl https://raw.githubusercontent.com/wise2c-dev/wise2c-config/master/config.yaml -o /tmp/config.yaml
+kubernetes_version=$(cat /tmp/config.yaml    |  yq -r '.branchs[] | select(.branch == "release-1.13")|.kube_version')
+docker_version=docker-$(cat /tmp/config.yaml |  yq -r '.branchs[] | select(.branch == "release-1.13")|.docker_version')
+haproxy_version=$(cat /tmp/config.yaml       |  yq -r '.branchs[] | select(.branch == "release-1.13")|.haproxy_version')
+keepalived_version=$(cat /tmp/config.yaml    |  yq -r '.branchs[] | select(.branch == "release-1.13")|.keepalived_version')
 loadbalancer_version=HAProxy-${haproxy_version}_Keepalived-${keepalived_version}
-istio_version=1.1.7
+istio_version=$(cat /tmp/config.yaml         |  yq -r '.branchs[] | select(.branch == "release-1.13")|.istio_version')
 
-mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/v${kubernetes_version}
+
+mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/${kubernetes_version}
 mv ${path}/docker-playbook/version ${path}/docker-playbook/${docker_version}-CE
 mv ${path}/istio-playbook/version-images ${path}/istio-playbook/v${istio_version}-images
 
-docker run --rm --name=kubeadm-version wise2c/kubeadm-version:v${kubernetes_version} kubeadm config images list --kubernetes-version ${kubernetes_version} > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wise2c/kubeadm-version:${kubernetes_version} kubeadm config images list --kubernetes-version ${kubernetes_version:1} > ${path}/k8s-images-list.txt
 
 etcd_version=`cat ${path}/k8s-images-list.txt |grep etcd |awk -F ':' '{print $2}'`
 mv etcd-playbook/version-by-kubeadm etcd-playbook/${etcd_version}
 
-echo "Kubernetes Version: ${kubernetes_version}" > ${path}/components-version.txt
+echo "Kubernetes Version: ${kubernetes_version:1}" > ${path}/components-version.txt
 echo "Harbor Version: ${harbor_version}" >> ${path}/components-version.txt
 echo "Docker Version: ${docker_version}" >> ${path}/components-version.txt
 echo "HAProxy Version: ${haproxy_version}" >> ${path}/components-version.txt

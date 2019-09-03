@@ -32,6 +32,12 @@ services:
     ports:
     - 2009:2009 
     restart: always
+  pip-repo:
+    container_name: deploy-piprepo
+    image: wisecloud/pip-repo:v0.1.0
+    ports:
+    - 2008:8080
+    restart: always
 volumes:
   playbook:
     external: false

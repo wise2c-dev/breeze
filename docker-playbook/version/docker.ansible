@@ -36,7 +36,7 @@
       firewall-cmd --set-default-zone=trusted
       firewall-cmd --complete-reload
 
-  - name: distribute wise2c repo
+  - name: distribute wise2c yum repo
     template:
       src: '{{ item.src }}'
       dest: '{{ item.dest }}'
@@ -63,10 +63,24 @@
     - docker-ce
     - python-docker-py
     - python-jinja2
+    - python-pip
     - docker-compose
     - chrony
     - ipvsadm
     - nfs-utils
+
+  - name: update pip
+    pip:
+      name: pip
+      executable: pip
+      extra_args: -i http://{{ wise2c_seed_host }}:2008/simple --trusted-host {{ wise2c_seed_host }}
+      state: latest
+
+  - name: install yq (python version)
+    pip:
+      name: yq
+      extra_args: -i http://{{ wise2c_seed_host }}:2008/simple --trusted-host {{ wise2c_seed_host }}
+
 
   - name: distribute chrony server config
     template:

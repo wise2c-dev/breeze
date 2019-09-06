@@ -50,7 +50,12 @@
     with_items:
     - { src: 'template/ipvs.conf.j2', dest: '/etc/modules-load.d/ipvs.conf' }
 
-  - name: install docker
+  - name: clean yum cache
+    shell: |
+      yum clean all
+    when: (ansible_distribution =="RedHat") or (ansible_distribution =="CentOS")
+
+  - name: yum install docker
     yum:
       disablerepo: '*'
       enablerepo: wise2c
@@ -80,7 +85,6 @@
     pip:
       name: yq
       extra_args: -i http://{{ wise2c_seed_host }}:2008/simple --trusted-host {{ wise2c_seed_host }}
-
 
   - name: distribute chrony server config
     template:

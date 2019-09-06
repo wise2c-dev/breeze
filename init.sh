@@ -10,6 +10,9 @@ docker_version=docker-$(cat /tmp/config.yaml |  yq -r '.branchs[] | select(.bran
 haproxy_version=$(cat /tmp/config.yaml       |  yq -r '.branchs[] | select(.branch == "release-1.13")|.haproxy_version')
 keepalived_version=$(cat /tmp/config.yaml    |  yq -r '.branchs[] | select(.branch == "release-1.13")|.keepalived_version')
 loadbalancer_version=HAProxy-${haproxy_version}_Keepalived-${keepalived_version}
+metrics_server_version=$(cat /tmp/config.yaml|  yq -r '.branchs[] | select(.branch == "release-1.13")|.metrics_server_version')
+dashboard_version=$(cat /tmp/config.yaml     |  yq -r '.branchs[] | select(.branch == "release-1.13")|.dashboard_version')
+flannel_version=$(cat /tmp/config.yaml       |  yq -r '.branchs[] | select(.branch == "release-1.13")|.flannel_version')
 istio_version=$(cat /tmp/config.yaml         |  yq -r '.branchs[] | select(.branch == "release-1.13")|.istio_version')
 
 
@@ -27,6 +30,9 @@ echo "Harbor Version: ${harbor_version}" >> ${path}/components-version.txt
 echo "Docker Version: ${docker_version}" >> ${path}/components-version.txt
 echo "HAProxy Version: ${haproxy_version}" >> ${path}/components-version.txt
 echo "Keepalived Version: ${keepalived_version}" >> ${path}/components-version.txt
+echo "MetricsServer Version: ${metrics_server_version}" >> ${path}/components-version.txt
+echo "Dashboard Version: ${dashboard_version}" >> ${path}/components-version.txt
+echo "Flannel Version: ${flannel_version}" >> ${path}/components-version.txt
 echo "Istio Version: ${istio_version}"  >> ${path}/components-version.txt
 
 for dir in `ls ${path}`

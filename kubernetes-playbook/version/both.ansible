@@ -8,11 +8,19 @@
     - '{{ path }}'
     - $HOME/.kube
 
-  - name: remove swapfile from /etc/fstab
+  - name: remove swapfile from /etc/fstab for CentOS
     mount:
       name: swap
       fstype: swap
       state: absent
+    when: ansible_distribution == "CentOS"
+
+  - name: remove swapfile from /etc/fstab for RHEL
+    mount:
+      name: none
+      fstype: swap
+      state: absent
+    when: ansible_distribution == "RedHat"
 
   - name: disable swap
     command: swapoff -a
@@ -24,7 +32,12 @@
         modprobe ip_vs_rr
         modprobe ip_vs_wrr
         modprobe ip_vs_sh
-  
+
+    - name: clean yum cache
+      shell: |
+        yum clean all
+      when: (ansible_distribution == "RedHat") or (ansible_distribution =="CentOS")
+
     - name: install kubernetes components
       yum:
         disablerepo: '*'

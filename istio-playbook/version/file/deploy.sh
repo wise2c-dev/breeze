@@ -1,6 +1,8 @@
 #!/bin/bash
-
 set -e
+
+#If seems that there is a bug on Ubuntu host to load the images. If no wait, it will return an error message: "Error response from daemon: No such image"
+sleep 60
 
 MyImageRepositoryIP=`cat harbor-address.txt`
 MyImageRepositoryProject=library
@@ -20,21 +22,23 @@ rm -rf istio-$IstioVersion
 tar zxvf istio-$IstioVersion-origin.tar.gz
 cd istio-$IstioVersion/install/kubernetes
 sed -i "s/docker.io\/istio/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "docker.io/istio" ./ |grep .yaml)
-sed -i "s/docker.io\/kiali/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "docker.io/kiali" ./ |grep .yaml)
 sed -i "s/docker.io\/prom/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "docker.io/prom" ./ |grep .yaml)
 sed -i "s/docker.io\/jaegertracing/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "docker.io/jaegertracing" ./ |grep .yaml)
 sed -i "s/grafana\/grafana/$MyImageRepositoryIP\/$MyImageRepositoryProject\/grafana/g" $(grep -lr "grafana/grafana" ./ |grep .yaml)
+sed -i "s/quay.io\/kiali/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "quay.io/kiali" ./ |grep .yaml)
 cd ../../
 
 # Istio init deploy
 helm install install/kubernetes/helm/istio-init --name istio-init --namespace istio-system
 
 ######### Deploy Istio #########
-# We need to verify that all 53 Istio CRDs were committed to the Kubernetes api-server
+# We need to verify that all 23 Istio CRDs were committed to the Kubernetes api-server
 printf "Waiting for Istio to commit custom resource definitions..."
 
+until [ `kubectl get crds |grep 'istio.io\|certmanager.k8s.io' |wc -l` -eq 23 ]; do printf "."; done
+
 crdresult=""
-for ((i=1; i<=53; i++)); do crdresult=${crdresult}"True"; done
+for ((i=1; i<=23; i++)); do crdresult=${crdresult}"True"; done
 
 until [ `for istiocrds in $(kubectl get crds |grep 'istio.io\|certmanager.k8s.io' |awk '{print $1}'); do kubectl get crd ${istiocrds} -o jsonpath='{.status.conditions[1].status}'; done` = $crdresult ]; do sleep 1; printf "."; done
 

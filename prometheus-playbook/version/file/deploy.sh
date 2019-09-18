@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+#If seems that there is a bug on Ubuntu host to load the images. If no wait, it will return an error message: "Error response from daemon: No such image"
+sleep 60
+
 MyImageRepositoryIP=`cat harbor-address.txt`
 MyImageRepositoryProject=library
 KubePrometheusVersion=`cat components-version.txt |grep "KubePrometheus" |awk '{print $3}'`
@@ -15,7 +18,6 @@ echo 'Images taged.'
 for file in $(cat images-list.txt); do docker push $MyImageRepositoryIP/$MyImageRepositoryProject/${file##*/}; done
 
 echo 'Images pushed.'
-
 ######### Update deploy yaml files #########
 rm -rf kube-prometheus-$KubePrometheusVersion
 tar zxvf kube-prometheus-v$KubePrometheusVersion-origin.tar.gz
@@ -24,6 +26,7 @@ sed -i "s/quay.io\/coreos/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(g
 sed -i "s/quay.io\/prometheus/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "quay.io/prometheus" ./ |grep .yaml)
 sed -i "s/grafana\/grafana/$MyImageRepositoryIP\/$MyImageRepositoryProject\/grafana/g" $(grep -lr "grafana/grafana" ./ |grep .yaml)
 sed -i "s/gcr.io\/google_containers/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "gcr.io/google_containers" ./ |grep .yaml)
+sed -i "s/k8s.gcr.io/$MyImageRepositoryIP\/$MyImageRepositoryProject/g" $(grep -lr "k8s.gcr.io" ./ |grep .yaml)
 
 # For offline deploy
 cd ..
@@ -68,12 +71,20 @@ kubectl apply -f manifests/phase1
 
 # Wait for CRDs to be ready.
 printf "Waiting for Operator to register custom resource definitions..."
-until [ `kctl get customresourcedefinitions servicemonitors.monitoring.coreos.com -o jsonpath='{.status.conditions[1].status}'` = "True" ]; do sleep 1; printf "."; done
-until [ `kctl get customresourcedefinitions prometheuses.monitoring.coreos.com -o jsonpath='{.status.conditions[1].status}'` = "True" ]; do sleep 1; printf "."; done
-until [ `kctl get customresourcedefinitions alertmanagers.monitoring.coreos.com -o jsonpath='{.status.conditions[1].status}'` = "True" ]; do sleep 1; printf "."; done
+
+crd_servicemonitors_status="false"
+until [ "$crd_servicemonitors_status" = "True" ]; do sleep 1; printf "."; crd_servicemonitors_status=`kctl get customresourcedefinitions servicemonitors.monitoring.coreos.com -o jsonpath='{.status.conditions[1].status}' 2>&1`; done
+
+crd_prometheuses_status="false"
+until [ "$crd_prometheuses_status" = "True" ]; do sleep 1; printf "."; crd_prometheuses_status=`kctl get customresourcedefinitions prometheuses.monitoring.coreos.com -o jsonpath='{.status.conditions[1].status}' 2>&1`; done
+
+crd_alertmanagers_status="false"
+until [ "$crd_alertmanagers_status" = "True" ]; do sleep 1; printf "."; crd_alertmanagers_status=`kctl get customresourcedefinitions alertmanagers.monitoring.coreos.com -o jsonpath='{.status.conditions[1].status}' 2>&1`; done
+
 until kctl get servicemonitors.monitoring.coreos.com > /dev/null 2>&1; do sleep 1; printf "."; done
 until kctl get prometheuses.monitoring.coreos.com > /dev/null 2>&1; do sleep 1; printf "."; done
 until kctl get alertmanagers.monitoring.coreos.com > /dev/null 2>&1; do sleep 1; printf "."; done
+
 echo 'Phase1 done!'
 
 kubectl apply -f manifests/phase2

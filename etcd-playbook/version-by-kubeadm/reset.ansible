@@ -12,4 +12,9 @@
       path: '{{ item }}'
       state: absent
     with_items:
-    - /data/wisecloud/etcd
+      - "{{ etcd_data_path }}"
+
+  - name: clean etcd cert directory
+    file:
+      path: '/etc/etcd/pki'
+      state: absent

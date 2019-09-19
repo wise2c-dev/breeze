@@ -36,7 +36,8 @@ echo "dns_version: ${dns_version}" >> ${path}/yat/all.yml.gotmpl
 echo "pause_version: ${pause_version}" >> ${path}/yat/all.yml.gotmpl
 
 flannel_repo="quay.io/coreos"
-flannel_version="v0.11.0"
+#flannel_version="v0.11.0"
+flannel_version=$(cat /tmp/config.yaml    |  yq -r '.branchs[] | select(.branch == "release-1.13")|.flannel_version')
 echo "flannel_repo: ${flannel_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "flannel_version: ${flannel_version}-amd64" >> ${path}/yat/all.yml.gotmpl
 
@@ -48,7 +49,8 @@ echo "flannel_version: ${flannel_version}-amd64" >> ${path}/yat/all.yml.gotmpl
 #   | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
 
 dashboard_repo=${kubernetes_repo}
-dashboard_version="v1.10.1"
+#dashboard_version="v1.10.1"
+dashboard_version=$(cat /tmp/config.yaml    |  yq -r '.branchs[] | select(.branch == "release-1.13")|.dashboard_version')
 echo "dashboard_repo: ${dashboard_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "dashboard_version: ${dashboard_version}" >> ${path}/yat/all.yml.gotmpl
 
@@ -57,7 +59,7 @@ echo "dashboard_version: ${dashboard_version}" >> ${path}/yat/all.yml.gotmpl
 
 curl -sSL https://github.com/wise2c-devops/breeze/raw/v1.13/kubernetes-playbook/kubernetes-dashboard-wise2c.yaml.j2 \
     | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
-    
+
 echo "=== pulling flannel image ==="
 docker pull ${flannel_repo}/flannel:${flannel_version}-amd64
 echo "=== flannel image is pulled successfully ==="

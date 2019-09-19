@@ -13,7 +13,7 @@ loadbalancer_version=HAProxy-${haproxy_version}_Keepalived-${keepalived_version}
 istio_version=$(cat /tmp/config.yaml         |  yq -r '.branchs[] | select(.branch == "release-1.13")|.istio_version')
 
 
-mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/${kubernetes_version}
+mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/${kubernetes_version:1}
 mv ${path}/docker-playbook/version ${path}/docker-playbook/${docker_version}-CE
 mv ${path}/istio-playbook/version-images ${path}/istio-playbook/v${istio_version}-images
 

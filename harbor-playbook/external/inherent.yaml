@@ -1,4 +1,0 @@
-endpoint: {{ .Property.endpoint }}
-https: {{ .Property.https }}
-user: {{ .Property.username }}
-password: {{ .Property.password }}

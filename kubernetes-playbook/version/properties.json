@@ -48,11 +48,11 @@
     {
         "variable": "cni",
         "label": "Kubernetes cni component (K8s容器CNI网络模型)",
-        "description": "Flannel | Calico | Canal",
+        "description": "Flannel",
         "type": "enum",
         "default": "Flannel",
         "required": true,
-        "options": [ "Flannel", "Calico", "Canal" ]
+        "options": [ "Flannel" ]
     },
     {
         "variable": "pod_cidr",
@@ -76,40 +76,6 @@
         "description": "Kubernetes service CIDR  (e.g. 10.96.0.0/12)",
         "type": "string",
         "default": "10.96.0.0/12",
-        "required": true
-    },
-    {
-        "variable": "calico_mode",
-        "label": "Calico working mode (Calico工作模型)",
-        "description": "IPIP_Tunnel | BGP",
-        "type": "enum",
-        "default": "IPIP_Tunnel",
-        "required": true,
-        "options": [ "IPIP_Tunnel", "BGP" ]
-    },
-    {
-        "variable": "calico_node_ip_detection_mode",
-        "label": "IP_AUTODETECTION_METHOD for Calico nodes (Calico节点IP地址自动判断机制)",
-        "description": "The method to use to autodetect the IPv4 address for calico node.(e.g. 'eth*' or 'can-reach=8.8.8.8' 可以填网卡名如eth*或者填写can-reach=节点路由可达的IP地址)",
-        "type": "string",
-        "default": "can-reach=8.8.8.8",
-        "required": true
-    },
-    {
-        "variable": "calico_nodes",
-        "label": "Number of Calico nodes (Calico节点数，50及50以内或50以上)",
-        "description": "50_nodes_or_less | More_than_50_nodes",
-        "type": "enum",
-        "default": "50_nodes_or_less",
-        "required": true,
-        "options": [ "50_nodes_or_less", "More_than_50_nodes" ]
-    },
-    {
-        "variable": "calico_typha_replicas",
-        "label": "Desired number of replicas for calico-typha deployment (大集群环境calico-typha的副本数)",
-        "description": "Recommend at least one replica for every 200 nodes and no more than 20 replicas. In production, we recommend a minimum of three replicas to reduce the impact of rolling upgrades and failures. The number of replicas should always be less than the number of nodes, otherwise rolling upgrades will stall.",
-        "type": "int",
-        "default": "3",
         "required": true
     }
 ]

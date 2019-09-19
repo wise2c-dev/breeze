@@ -19,7 +19,7 @@ nodeRegistration:
 ---
 apiServer:
   certSANs:
-  - {{ endpoint.split(':')[0] }}
+  - "{{ endpoint.split(':')[0] }}"
   extraArgs:
     apiserver-count: "3"
     feature-gates: LocalStorageCapacityIsolation=true

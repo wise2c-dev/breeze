@@ -13,13 +13,13 @@
   - { src: 'file/metrics-server.tar.bz2', dest: '{{ path }}' }
   run_once: true
 
-- name: copy calico folder
-  copy:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-  with_items:
-  - { src: 'file/calico', dest: '{{ path }}/' }
-  run_once: true
+# - name: copy calico folder
+#   copy:
+#     src: '{{ item.src }}'
+#     dest: '{{ item.dest }}'
+#   with_items:
+#   - { src: 'file/calico', dest: '{{ path }}/' }
+#   run_once: true
 
 - name: copy metrics-server folder
   copy:
@@ -39,12 +39,12 @@
   - dashboard.tar.bz2
   - tiller.tar.bz2
   - metrics-server.tar.bz2
-  - calico/images/calico-cni.tar.bz2
-  - calico/images/calico-kube-controllers.tar.bz2
-  - calico/images/calico-node.tar.bz2
-  - calico/images/calico-typha.tar.bz2
-  - calico/images/calico-pod2daemon-flexvol.tar.bz2
-  - calico/images/calico-ctl.tar.bz2
+  # - calico/images/calico-cni.tar.bz2
+  # - calico/images/calico-kube-controllers.tar.bz2
+  # - calico/images/calico-node.tar.bz2
+  # - calico/images/calico-typha.tar.bz2
+  # - calico/images/calico-pod2daemon-flexvol.tar.bz2
+  # - calico/images/calico-ctl.tar.bz2
   run_once: true
 
 - name: docker login
@@ -67,16 +67,16 @@
   - { repo: '{{ kubernetes_repo }}', name: 'kube-proxy', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'coredns', tag: '{{ dns_version }}' }
-  - { repo: '{{ metrics_server_repo }}', name: 'metrics-server-amd64', tag: '{{ metrics_server_version }}' }
+  # - { repo: '{{ metrics_server_repo }}', name: 'metrics-server-amd64', tag: '{{ metrics_server_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
-  - { repo: 'calico', name: 'cni', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'kube-controllers', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'node', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'typha', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'ctl', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'cni', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'kube-controllers', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'node', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'typha', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'ctl', tag: '{{ calico_version }}' }
   - { repo: '{{ dashboard_repo }}', name: 'kubernetes-dashboard-amd64', tag: '{{ dashboard_version }}' }
-  - { repo: '{{ helm_repo }}', name: 'tiller', tag: '{{ helm_version }}' }
+  # - { repo: '{{ helm_repo }}', name: 'tiller', tag: '{{ helm_version }}' }
   run_once: true
 
 - name: push images
@@ -92,16 +92,16 @@
   - { name: 'kube-proxy', tag: '{{ kubernetes_version }}' }
   - { name: 'pause', tag: '{{ pause_version }}' }
   - { name: 'coredns', tag: '{{ dns_version }}' }
-  - { name: 'metrics-server-amd64', tag: '{{ metrics_server_version }}' }
+  # - { name: 'metrics-server-amd64', tag: '{{ metrics_server_version }}' }
   - { name: 'flannel', tag: '{{ flannel_version }}' }
-  - { name: 'cni', tag: '{{ calico_version }}' }
-  - { name: 'kube-controllers', tag: '{{ calico_version }}' }
-  - { name: 'node', tag: '{{ calico_version }}' }
-  - { name: 'typha', tag: '{{ calico_version }}' }
-  - { name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
-  - { name: 'ctl', tag: '{{ calico_version }}' }
+  # - { name: 'cni', tag: '{{ calico_version }}' }
+  # - { name: 'kube-controllers', tag: '{{ calico_version }}' }
+  # - { name: 'node', tag: '{{ calico_version }}' }
+  # - { name: 'typha', tag: '{{ calico_version }}' }
+  # - { name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
+  # - { name: 'ctl', tag: '{{ calico_version }}' }
   - { name: 'kubernetes-dashboard-amd64', tag: '{{ dashboard_version }}' }
-  - { name: 'tiller', tag: '{{ helm_version }}' }
+  # - { name: 'tiller', tag: '{{ helm_version }}' }
   run_once: true
 
 - name: Remove k8s.gcr.io images tag
@@ -116,16 +116,16 @@
   - { repo: '{{ kubernetes_repo }}', name: 'kube-proxy', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'coredns', tag: '{{ dns_version }}' }
-  - { repo: '{{ metrics_server_repo }}', name: 'metrics-server-amd64', tag: '{{ metrics_server_version }}' }
+  # - { repo: '{{ metrics_server_repo }}', name: 'metrics-server-amd64', tag: '{{ metrics_server_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
-  - { repo: 'calico', name: 'cni', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'kube-controllers', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'node', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'typha', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
-  - { repo: 'calico', name: 'ctl', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'cni', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'kube-controllers', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'node', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'typha', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
+  # - { repo: 'calico', name: 'ctl', tag: '{{ calico_version }}' }
   - { repo: '{{ dashboard_repo }}', name: 'kubernetes-dashboard-amd64', tag: '{{ dashboard_version }}' }
-  - { repo: '{{ helm_repo }}', name: 'tiller', tag: '{{ helm_version }}' }
+  # - { repo: '{{ helm_repo }}', name: 'tiller', tag: '{{ helm_version }}' }
   run_once: ture
 
 - name: install git command for helm-push and perl library for ipcalc
@@ -384,25 +384,25 @@
     - { filename: "{{ path }}/kube-flannel.yml" }
   run_once: true
 
-- name: apply calico cni for cluster with more than 50 nodes
-  shell: |
-    kubectl apply -f {{ path }}/calico/k8s-manifests/calico-typha.yaml
-    kubectl apply -f {{ path }}/calico/k8s-manifests/calicoctl.yaml
-  run_once: true
-  when: (cni == 'Calico') and (calico_nodes == 'More_than_50_nodes')
+# - name: apply calico cni for cluster with more than 50 nodes
+#   shell: |
+#     kubectl apply -f {{ path }}/calico/k8s-manifests/calico-typha.yaml
+#     kubectl apply -f {{ path }}/calico/k8s-manifests/calicoctl.yaml
+#   run_once: true
+#   when: (cni == 'Calico') and (calico_nodes == 'More_than_50_nodes')
 
-- name: apply calico cni for cluster with 50 nodes or less
-  shell: |
-    kubectl apply -f {{ path }}/calico/k8s-manifests/calico.yaml
-    kubectl apply -f {{ path }}/calico/k8s-manifests/calicoctl.yaml
-  run_once: true
-  when: (cni == 'Calico') and (calico_nodes == '50_nodes_or_less')
+# - name: apply calico cni for cluster with 50 nodes or less
+#   shell: |
+#     kubectl apply -f {{ path }}/calico/k8s-manifests/calico.yaml
+#     kubectl apply -f {{ path }}/calico/k8s-manifests/calicoctl.yaml
+#   run_once: true
+#   when: (cni == 'Calico') and (calico_nodes == '50_nodes_or_less')
 
-- name: apply canal cni
-  shell: |
-    kubectl apply -f {{ path }}/calico/k8s-manifests/canal.yaml
-  run_once: true
-  when: cni == 'Canal'
+# - name: apply canal cni
+#   shell: |
+#     kubectl apply -f {{ path }}/calico/k8s-manifests/canal.yaml
+#   run_once: true
+#   when: cni == 'Canal'
 
 - name: apply addons
   shell: |
@@ -477,8 +477,8 @@
     helm repo add --username={{ registry_user }} --password={{ registry_password }} {{ registry_project }} http://{{ registry_endpoint }}/chartrepo/{{ registry_project }}
   when: not registry_https
 
-- name: scale calico-typha replicas
-  shell: |
-    kubectl -n kube-system scale deployment calico-typha --replicas={{ calico_typha_replicas }}
-  run_once: true
-  when: (cni == 'Calico') and (calico_nodes == 'More_than_50_nodes')
+# - name: scale calico-typha replicas
+#   shell: |
+#     kubectl -n kube-system scale deployment calico-typha --replicas={{ calico_typha_replicas }}
+#   run_once: true
+#   when: (cni == 'Calico') and (calico_nodes == 'More_than_50_nodes')

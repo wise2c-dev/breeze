@@ -6,7 +6,7 @@ path=`dirname $0`
 
 k8s_version=`cat ${path}/components-version.txt |grep "Kubernetes" |awk '{print $3}'`
 
-docker run --rm --name=kubeadm-version wise2c/kubeadm-version:v${k8s_version} kubeadm config images list --kubernetes-version ${k8s_version} > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:v${k8s_version} kubeadm config images list --kubernetes-version ${k8s_version} > ${path}/k8s-images-list.txt
 
 echo "=== pulling kubernetes images ==="
 for IMAGES in $(cat ${path}/k8s-images-list.txt |grep -v etcd); do
@@ -49,27 +49,27 @@ echo "flannel_version_short: ${flannel_version}" >> ${path}/yat/all.yml.gotmpl
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml \
    | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
 
-calico_version=v`cat ${path}/components-version.txt |grep "Calico" |awk '{print $3}'`
-echo "calico_version: ${calico_version}" >> ${path}/yat/all.yml.gotmpl
-echo "=== downloading calico release package ==="
-curl -L -o ${path}/file/calico-${calico_version}.tgz https://github.com/projectcalico/calico/releases/download/${calico_version}/release-${calico_version}.tgz
-echo "=== calico release package is downloaded successfully ==="
-tar zxf ${path}/file/calico-${calico_version}.tgz -C ${path}/file/
-rm -f ${path}/file/calico-${calico_version}.tgz
-mv ${path}/file/release-${calico_version} ${path}/file/calico
-rm -rf ${path}/file/calico/bin
-docker pull calico/pod2daemon-flexvol:${calico_version}
-docker save calico/pod2daemon-flexvol:${calico_version} -o ${path}/file/calico/images/calico-pod2daemon-flexvol.tar
-docker pull calico/ctl:${calico_version}
-docker save calico/ctl:${calico_version} -o ${path}/file/calico/images/calico-ctl.tar
-echo "=== Compressing calico images ==="
-bzip2 -z --best ${path}/file/calico/images/calico-cni.tar
-bzip2 -z --best ${path}/file/calico/images/calico-kube-controllers.tar
-bzip2 -z --best ${path}/file/calico/images/calico-node.tar
-bzip2 -z --best ${path}/file/calico/images/calico-pod2daemon-flexvol.tar
-bzip2 -z --best ${path}/file/calico/images/calico-typha.tar
-bzip2 -z --best ${path}/file/calico/images/calico-ctl.tar
-echo "=== Calico images are compressed as bzip format successfully ==="
+# calico_version=v`cat ${path}/components-version.txt |grep "Calico" |awk '{print $3}'`
+# echo "calico_version: ${calico_version}" >> ${path}/yat/all.yml.gotmpl
+# echo "=== downloading calico release package ==="
+# curl -L -o ${path}/file/calico-${calico_version}.tgz https://github.com/projectcalico/calico/releases/download/${calico_version}/release-${calico_version}.tgz
+# echo "=== calico release package is downloaded successfully ==="
+# tar zxf ${path}/file/calico-${calico_version}.tgz -C ${path}/file/
+# rm -f ${path}/file/calico-${calico_version}.tgz
+# mv ${path}/file/release-${calico_version} ${path}/file/calico
+# rm -rf ${path}/file/calico/bin
+# docker pull calico/pod2daemon-flexvol:${calico_version}
+# docker save calico/pod2daemon-flexvol:${calico_version} -o ${path}/file/calico/images/calico-pod2daemon-flexvol.tar
+# docker pull calico/ctl:${calico_version}
+# docker save calico/ctl:${calico_version} -o ${path}/file/calico/images/calico-ctl.tar
+# echo "=== Compressing calico images ==="
+# bzip2 -z --best ${path}/file/calico/images/calico-cni.tar
+# bzip2 -z --best ${path}/file/calico/images/calico-kube-controllers.tar
+# bzip2 -z --best ${path}/file/calico/images/calico-node.tar
+# bzip2 -z --best ${path}/file/calico/images/calico-pod2daemon-flexvol.tar
+# bzip2 -z --best ${path}/file/calico/images/calico-typha.tar
+# bzip2 -z --best ${path}/file/calico/images/calico-ctl.tar
+# echo "=== Calico images are compressed as bzip format successfully ==="
 
 dashboard_repo=${kubernetes_repo}
 dashboard_version=v`cat ${path}/components-version.txt |grep "Dashboard" |awk '{print $3}'`
@@ -102,17 +102,17 @@ echo "=== flannel image is saved successfully ==="
 
 echo "=== pulling kubernetes dashboard and metrics-server images ==="
 docker pull ${dashboard_repo}/kubernetes-dashboard-amd64:${dashboard_version}
-docker pull ${metrics_server_repo}/metrics-server-amd64:${metrics_server_version}
+# docker pull ${metrics_server_repo}/metrics-server-amd64:${metrics_server_version}
 echo "=== kubernetes dashboard and metrics-server images are pulled successfully ==="
 
 echo "=== saving kubernetes dashboard images ==="
 docker save ${dashboard_repo}/kubernetes-dashboard-amd64:${dashboard_version} \
     > ${path}/file/dashboard.tar
-docker save ${metrics_server_repo}/metrics-server-amd64:${metrics_server_version} -o ${path}/file/metrics-server.tar
+# docker save ${metrics_server_repo}/metrics-server-amd64:${metrics_server_version} -o ${path}/file/metrics-server.tar
 rm ${path}/file/dashboard.tar.bz2 -f
-rm ${path}/file/metrics-server.tar.bz2 -f
+# rm ${path}/file/metrics-server.tar.bz2 -f
 bzip2 -z --best ${path}/file/dashboard.tar
-bzip2 -z --best ${path}/file/metrics-server.tar
+# bzip2 -z --best ${path}/file/metrics-server.tar
 echo "=== kubernetes dashboard and metrics-server images are saved successfully ==="
 
 echo "=== download cfssl tools ==="
@@ -123,24 +123,3 @@ curl -L -o cfssl-certinfo ${CFSSL_URL}/cfssl-certinfo_linux-amd64
 chmod +x cfssl cfssljson cfssl-certinfo
 tar zcvf ${path}/file/cfssl-tools.tar.gz cfssl cfssl-certinfo cfssljson
 echo "=== cfssl tools is download successfully ==="
-
-helm_repo="gcr.io/kubernetes-helm"
-helm_version=v`cat ${path}/components-version.txt |grep "Helm" |awk '{print $3}'`
-
-echo "helm_repo: ${helm_repo}" >> ${path}/yat/all.yml.gotmpl
-echo "helm_version: ${helm_version}" >> ${path}/yat/all.yml.gotmpl
-
-echo "=== pulling helm tiller image ==="
-docker pull ${helm_repo}/tiller:${helm_version}
-echo "=== helm tiller image is pulled successfully ==="
-
-echo "=== saving helm tiller image ==="
-docker save ${helm_repo}/tiller:${helm_version} > ${path}/file/tiller.tar
-rm ${path}/file/tiller.tar.bz2 -f
-bzip2 -z --best ${path}/file/tiller.tar
-echo "=== helm tiller image is saved successfully ==="
-
-echo "=== download helm binary package ==="
-rm ${path}/file/helm-linux-amd64.tar.gz -f
-curl -o ${path}/file/helm-linux-amd64.tar.gz https://storage.googleapis.com/kubernetes-helm/helm-${helm_version}-linux-amd64.tar.gz
-echo "=== helm binary package is saved successfully ==="

@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  name: etcd-exporter
+  labels:
+    k8s-app: etcd-exporter
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http
+    port: 2379
+    protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: etcd-exporter
+  labels:
+    k8s-app: etcd-exporter
+subsets:
+- addresses:
+{% for etcd in etcd_ips %}
+  - nodeName: {{ etcd.name }}
+    ip: {{ etcd.ip }}
+{% endfor %}
+  ports:
+  - name: http
+    port: 2379
+    protocol: TCP

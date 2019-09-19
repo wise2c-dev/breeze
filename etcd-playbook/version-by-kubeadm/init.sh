@@ -11,5 +11,5 @@ echo "version: ${1}" >> ${path}/group_vars/etcd.yml
 echo "etcd_version: ${1}" >> ${path}/inherent.yaml
 
 docker pull ${image}
-docker save ${image} -o ${path}/file/etcd.tar
+docker save ${image} > ${path}/file/etcd.tar
 bzip2 -z --best ${path}/file/etcd.tar

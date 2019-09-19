@@ -1,0 +1,10 @@
+[
+    {
+        "variable": "self",
+        "label": "Istio push images node",
+        "description": "推送镜像的主机",
+        "type": "host",
+        "default": "",
+        "required": true
+    }
+]

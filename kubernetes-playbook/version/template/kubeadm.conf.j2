@@ -36,8 +36,8 @@ dns:
   type: CoreDNS
 etcd:
   external:
-    caFile: /etc/etcd/pki/ca.pem
-    certFile: /etc/etcd/pki/etcd.pem
+    caFile: ""
+    certFile: ""
     endpoints:
 {% for host in groups['etcd'] %}
     - https://{{ host }}:2379

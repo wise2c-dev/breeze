@@ -1,0 +1,74 @@
+- name: setup istio
+  hosts: istio
+  user: root
+  vars:
+    path: /var/tmp/wise2c/istio
+  tasks:
+  - name: make istio dir
+    file:
+      path: '{{ item }}'
+      state: directory
+      mode: 0755
+    with_items:
+      - '{{ cpath }}'
+      - '{{ path }}'
+    run_once: ture
+
+  - name: copy istio tarball and images
+    copy:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+    with_items:
+    - { src: 'file/istio-images-{{ istio_version }}.tar.bz2', dest: '{{ path }}' }
+    run_once: true
+
+  - name: copy istio push script
+    copy:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+      mode: 0755
+    with_items:
+    - { src: 'file/push.sh', dest: '{{ path }}' }
+    run_once: true
+
+  - name: copy istio deploy script dependance file
+    copy:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+    with_items:
+    - { src: './components-version.txt', dest: '{{ path }}' }
+    - { src: 'file/images-list.txt', dest: '{{ path }}' }
+    - { src: 'file/harbor-address.txt', dest: '{{ path }}' }
+    run_once: true
+
+  - name: load istio images
+    docker_image:
+      load_path: '{{ path }}/{{ item }}'
+      name: istio
+      timeout: 600
+    with_items:
+    - istio-images-{{ istio_version }}.tar.bz2
+    run_once: true
+
+  - name: docker login
+    docker_login:
+      registry: '{{ registry_endpoint }}'
+      username: '{{ registry_user }}'
+      password: '{{ registry_password }}'
+      reauthorize: true
+    run_once: true
+
+  - name: set harbor address for deploy script
+    replace:
+      path: "/var/tmp/wise2c/istio/{{ item }}"
+      regexp: "harbor-address"
+      replace: "{{ registry_endpoint }}"
+    with_items:
+      - "harbor-address.txt"
+    run_once: ture
+
+  - name: istio images push
+    shell: ./push.sh
+    args:
+      chdir: '{{ cpath }}/'
+    run_once: ture

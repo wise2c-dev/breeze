@@ -1,0 +1,6 @@
+- name: clean istio
+  hosts: all
+  user: root
+  tasks:
+  - name: clean istio images
+    shell: pwd

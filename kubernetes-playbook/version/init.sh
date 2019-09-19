@@ -6,7 +6,7 @@ path=`dirname $0`
 
 k8s_version=`cat ${path}/components-version.txt |grep "Kubernetes" |awk '{print $3}'`
 
-docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:v${k8s_version} kubeadm config images list --kubernetes-version ${k8s_version} > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:${k8s_version} kubeadm config images list --kubernetes-version ${k8s_version} > ${path}/k8s-images-list.txt
 
 echo "=== pulling kubernetes images ==="
 for IMAGES in $(cat ${path}/k8s-images-list.txt |grep -v etcd); do
@@ -49,27 +49,6 @@ echo "flannel_version_short: ${flannel_version}" >> ${path}/yat/all.yml.gotmpl
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml \
    | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
 
-# calico_version=v`cat ${path}/components-version.txt |grep "Calico" |awk '{print $3}'`
-# echo "calico_version: ${calico_version}" >> ${path}/yat/all.yml.gotmpl
-# echo "=== downloading calico release package ==="
-# curl -L -o ${path}/file/calico-${calico_version}.tgz https://github.com/projectcalico/calico/releases/download/${calico_version}/release-${calico_version}.tgz
-# echo "=== calico release package is downloaded successfully ==="
-# tar zxf ${path}/file/calico-${calico_version}.tgz -C ${path}/file/
-# rm -f ${path}/file/calico-${calico_version}.tgz
-# mv ${path}/file/release-${calico_version} ${path}/file/calico
-# rm -rf ${path}/file/calico/bin
-# docker pull calico/pod2daemon-flexvol:${calico_version}
-# docker save calico/pod2daemon-flexvol:${calico_version} -o ${path}/file/calico/images/calico-pod2daemon-flexvol.tar
-# docker pull calico/ctl:${calico_version}
-# docker save calico/ctl:${calico_version} -o ${path}/file/calico/images/calico-ctl.tar
-# echo "=== Compressing calico images ==="
-# bzip2 -z --best ${path}/file/calico/images/calico-cni.tar
-# bzip2 -z --best ${path}/file/calico/images/calico-kube-controllers.tar
-# bzip2 -z --best ${path}/file/calico/images/calico-node.tar
-# bzip2 -z --best ${path}/file/calico/images/calico-pod2daemon-flexvol.tar
-# bzip2 -z --best ${path}/file/calico/images/calico-typha.tar
-# bzip2 -z --best ${path}/file/calico/images/calico-ctl.tar
-# echo "=== Calico images are compressed as bzip format successfully ==="
 
 dashboard_repo=${kubernetes_repo}
 dashboard_version=v`cat ${path}/components-version.txt |grep "Dashboard" |awk '{print $3}'`

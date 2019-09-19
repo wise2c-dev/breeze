@@ -16,7 +16,7 @@ dashboard_version=$(cat /tmp/config.yaml     |  yq -r '.branchs[] | select(.bran
 
 mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/v${kubernetes_version}
 mv ${path}/docker-playbook/version ${path}/docker-playbook/${docker_version}-CE
-mv ${path}/istio-playbook/version ${path}/istio-playbook/v${istio_version}
+mv ${path}/istio-playbook/version-images ${path}/istio-playbook/v${istio_version}
 
 docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:${kubernetes_version} kubeadm config images list --kubernetes-version ${kubernetes_version} > ${path}/k8s-images-list.txt
 

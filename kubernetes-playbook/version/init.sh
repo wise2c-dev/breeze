@@ -5,7 +5,7 @@ set -e
 path=`dirname $0`
 
 k8s_version=`cat ${path}/components-version.txt |grep "Kubernetes" |awk '{print $3}'`
-docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:v${k8s_version} kubeadm config images list --kubernetes-version ${k8s_version} --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:${k8s_version} kubeadm config images list --kubernetes-version ${k8s_version} --feature-gates=CoreDNS=false > ${path}/k8s-images-list.txt
 
 
 kubernetes_repo=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F '/' '{print $1}'`
@@ -24,7 +24,8 @@ echo "pause_version: ${pause_version}"            >> ${path}/yat/all.yml.gotmpl
 
 
 flannel_repo="quay.io/coreos"
-flannel_version="v0.11.0"
+# flannel_version="v0.11.0"
+flannel_version=$(cat /tmp/config.yaml    |  yq -r '.branchs[] | select(.branch == "release-1.11")|.flannel_version')
 echo "flannel_repo: ${flannel_repo}"              >> ${path}/yat/all.yml.gotmpl
 echo "flannel_version: ${flannel_version}-amd64"  >> ${path}/yat/all.yml.gotmpl
 
@@ -34,9 +35,10 @@ echo "flannel_version: ${flannel_version}-amd64"  >> ${path}/yat/all.yml.gotmpl
 
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml \
    | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
-   
+
 dashboard_repo=${kubernetes_repo}
-dashboard_version="v1.10.1"
+# dashboard_version="v1.10.1"
+dashboard_version=$(cat /tmp/config.yaml    |  yq -r '.branchs[] | select(.branch == "release-1.11")|.dashboard_version')
 echo "dashboard_repo: ${dashboard_repo}"          >> ${path}/yat/all.yml.gotmpl
 echo "dashboard_version: ${dashboard_version}"    >> ${path}/yat/all.yml.gotmpl
 
@@ -45,7 +47,7 @@ echo "dashboard_version: ${dashboard_version}"    >> ${path}/yat/all.yml.gotmpl
 
 curl -sSL https://github.com/wise2c-devops/breeze/raw/v1.11/kubernetes-playbook/kubernetes-dashboard.yaml.j2 \
     | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
-    
+
 echo "=== pulling kubernetes images ==="
 docker pull ${kubernetes_repo}/kube-apiserver-amd64:${kubernetes_version}
 docker pull ${kubernetes_repo}/kube-controller-manager-amd64:${kubernetes_version}

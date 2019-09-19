@@ -4,17 +4,22 @@ services:
 - docker
 
 before_install:
-- VERSION=v1.11.10
 - sudo apt-get -qq update
-- sudo apt-get install -y bzip2
+- sudo apt-get install -y bzip2 python-pip
+- sudo pip install --upgrade pip
+- sudo -H pip install --ignore-installed PyYAML
+- sudo pip install yq
+- curl -sl https://raw.githubusercontent.com/wise2c-dev/wise2c-config/master/config.yaml -o /tmp/config.yaml
+- KUBE_VERSION=$(cat /tmp/config.yaml |  yq -r '.branchs[] | select(.branch == "release-1.11")|.kube_version')
+
 
 script:
 - bash init.sh
-- docker build -t wisecloud/playbook:$VERSION .
+- docker build -t wisecloud/playbook:${KUBE_VERSION} .
 
 deploy:
   provider: script
-  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push wisecloud/playbook:$VERSION
+  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push wisecloud/playbook:${KUBE_VERSION}
   on:
     all_branches: true
     #condition: "$TRAVIS_BRANCH =~ ^v[0-9]+\\.[0-9]+(\\.[0-9]+)?(-\\S*)?$"

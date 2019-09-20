@@ -14,7 +14,7 @@ flannel_version=$(cat /tmp/config.yaml       |  yq -r '.branchs[] | select(.bran
 dashboard_version=$(cat /tmp/config.yaml     |  yq -r '.branchs[] | select(.branch == "release-1.15")|.dashboard_version')
 
 
-mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/v${kubernetes_version}
+mv ${path}/kubernetes-playbook/version ${path}/kubernetes-playbook/${kubernetes_version}
 mv ${path}/docker-playbook/version ${path}/docker-playbook/${docker_version}-CE
 mv ${path}/istio-playbook/version-images ${path}/istio-playbook/v${istio_version}
 

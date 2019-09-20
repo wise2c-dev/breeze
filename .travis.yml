@@ -15,6 +15,9 @@ before_install:
 script:
 - bash init.sh
 - docker build -t wisecloud/playbook:$TRAVIS_BRANCH .
+- docker tag wisecloud/playbook:$TRAVIS_BRANCH registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$TRAVIS_BRANCH
+- docker login -u $ALIYUN_USERNAME -p $ALIYUN_PASSWORD registry.cn-hangzhou.aliyuncs.com
+- docker push registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$TRAVIS_BRANCH
 
 deploy:
   provider: script

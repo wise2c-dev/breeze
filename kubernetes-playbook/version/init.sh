@@ -42,31 +42,9 @@ echo "flannel_repo: ${flannel_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "flannel_version: ${flannel_version}-amd64" >> ${path}/yat/all.yml.gotmpl
 echo "flannel_version_short: ${flannel_version}" >> ${path}/yat/all.yml.gotmpl
 
-#The image tag is incorrect in https://raw.githubusercontent.com/coreos/flannel/v0.11.0/Documentation/kube-flannel.yml
-#curl -sSL https://raw.githubusercontent.com/coreos/flannel/${flannel_version}/Documentation/kube-flannel.yml \
-#   | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
-
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml \
    | sed -e "s,quay.io/coreos,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kube-flannel.yml.j2
 
-
-dashboard_repo=${kubernetes_repo}
-dashboard_version=v`cat ${path}/components-version.txt |grep "Dashboard" |awk '{print $3}'`
-
-echo "dashboard_repo: ${dashboard_repo}" >> ${path}/yat/all.yml.gotmpl
-echo "dashboard_version: ${dashboard_version}" >> ${path}/yat/all.yml.gotmpl
-
-metrics_server_repo=${kubernetes_repo}
-metrics_server_version=v`cat ${path}/components-version.txt |grep "MetricsServer" |awk '{print $3}'`
-
-echo "metrics_server_repo: ${metrics_server_repo}" >> ${path}/yat/all.yml.gotmpl
-echo "metrics_server_version: ${metrics_server_version}" >> ${path}/yat/all.yml.gotmpl
-
-#curl -sS https://raw.githubusercontent.com/kubernetes/dashboard/${dashboard_version}/src/deploy/recommended/kubernetes-dashboard.yaml \
-#    | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
-
-curl -sSL https://github.com/wise2c-devops/breeze/raw/v1.12/kubernetes-playbook/kubernetes-dashboard-wise2c.yaml.j2 \
-    | sed -e "s,k8s.gcr.io,{{ registry_endpoint }}/{{ registry_project }},g" > ${path}/template/kubernetes-dashboard.yml.j2
     
 echo "=== pulling flannel image ==="
 docker pull ${flannel_repo}/flannel:${flannel_version}-amd64
@@ -78,21 +56,6 @@ docker save ${flannel_repo}/flannel:${flannel_version}-amd64 \
 rm ${path}/file/flannel.tar.bz2 -f
 bzip2 -z --best ${path}/file/flannel.tar
 echo "=== flannel image is saved successfully ==="
-
-echo "=== pulling kubernetes dashboard and metrics-server images ==="
-docker pull ${dashboard_repo}/kubernetes-dashboard-amd64:${dashboard_version}
-# docker pull ${metrics_server_repo}/metrics-server-amd64:${metrics_server_version}
-echo "=== kubernetes dashboard and metrics-server images are pulled successfully ==="
-
-echo "=== saving kubernetes dashboard images ==="
-docker save ${dashboard_repo}/kubernetes-dashboard-amd64:${dashboard_version} \
-    > ${path}/file/dashboard.tar
-# docker save ${metrics_server_repo}/metrics-server-amd64:${metrics_server_version} -o ${path}/file/metrics-server.tar
-rm ${path}/file/dashboard.tar.bz2 -f
-# rm ${path}/file/metrics-server.tar.bz2 -f
-bzip2 -z --best ${path}/file/dashboard.tar
-# bzip2 -z --best ${path}/file/metrics-server.tar
-echo "=== kubernetes dashboard and metrics-server images are saved successfully ==="
 
 echo "=== download cfssl tools ==="
 export CFSSL_URL=https://pkg.cfssl.org/R1.2

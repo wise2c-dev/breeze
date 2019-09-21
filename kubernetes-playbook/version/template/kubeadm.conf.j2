@@ -38,11 +38,11 @@ etcd:
   external:
     caFile: ""
     certFile: ""
+    keyFile: ""
     endpoints:
 {% for host in groups['etcd'] %}
-    - https://{{ host }}:2379
+    - http://{{ host }}:2379
 {% endfor %}
-    keyFile: /etc/etcd/pki/etcd-key.pem
 imageRepository: {{ registry_endpoint }}/{{ registry_project }}
 kind: ClusterConfiguration
 kubernetesVersion: {{ kubernetes_version }}

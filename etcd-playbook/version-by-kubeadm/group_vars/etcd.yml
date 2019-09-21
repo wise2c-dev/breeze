@@ -7,10 +7,10 @@ command:
   {% endif -%}
   {% endfor -%}
 - --data-dir /var/lib/etcd
-- --advertise-client-urls https://{{ inventory_hostname }}:2379
-- --listen-client-urls https://{{ inventory_hostname }}:2379
-- --listen-peer-urls https://{{ inventory_hostname }}:2380
+- --advertise-client-urls http://{{ inventory_hostname }}:2379
+- --listen-client-urls http://{{ inventory_hostname }}:2379
+- --listen-peer-urls http://{{ inventory_hostname }}:2380
 - --initial-cluster-token etcd-cluster
-- --initial-advertise-peer-urls https://{{ inventory_hostname }}:2380
-- --initial-cluster {% for host in play_hosts %}etcd{{ loop.index0 }}=https://{{ host }}:2380{% if not loop.last %},{% endif %}{% endfor %}
+- --initial-advertise-peer-urls http://{{ inventory_hostname }}:2380
+- --initial-cluster {% for host in play_hosts %}etcd{{ loop.index0 }}=http://{{ host }}:2380{% if not loop.last %},{% endif %}{% endfor %}
 - --initial-cluster-state new

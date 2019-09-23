@@ -6,12 +6,19 @@ path=`dirname $0`
 
 k8s_version=`cat ${path}/components-version.txt |grep "Kubernetes" |awk '{print $3}'`
 
-docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:${k8s_version} kubeadm config images list --kubernetes-version ${k8s_version} > ${path}/k8s-images-list.txt
+docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:${k8s_version} kubeadm config images list --kubernetes-version ${k8s_version} --config=kube-dns.yaml > ${path}/k8s-images-list.txt
+
+kubernetes_repo=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F '/' '{print $1}'`
+kubernetes_version=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F ':' '{print $2}'`
+dns_version=`cat ${path}/k8s-images-list.txt |grep kube-dns |awk -F ':' '{print $2}'`
+pause_version=`cat ${path}/k8s-images-list.txt |grep pause |awk -F ':' '{print $2}'`
 
 echo "=== pulling kubernetes images ==="
 for IMAGES in $(cat ${path}/k8s-images-list.txt |grep -v etcd); do
   docker pull ${IMAGES}
 done
+docker pull wisecloud/k8s-dns-kube-dns-amd64:1.14.10.1
+docker tag wisecloud/k8s-dns-kube-dns-amd64:1.14.10.1 k8s.gcr.io/k8s-dns-kube-dns:${dns_version}
 echo "=== kubernetes images are pulled successfully ==="
 
 echo "=== saving kubernetes images ==="
@@ -21,10 +28,6 @@ rm ${path}/file/k8s.tar.bz2 -f
 bzip2 -z --best ${path}/file/k8s.tar
 echo "=== kubernetes images are saved successfully ==="
 
-kubernetes_repo=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F '/' '{print $1}'`
-kubernetes_version=`cat ${path}/k8s-images-list.txt |grep kube-apiserver |awk -F ':' '{print $2}'`
-dns_version=`cat ${path}/k8s-images-list.txt |grep coredns |awk -F ':' '{print $2}'`
-pause_version=`cat ${path}/k8s-images-list.txt |grep pause |awk -F ':' '{print $2}'`
 
 echo "" >> ${path}/inherent.yaml
 echo "version: ${kubernetes_version}" >> ${path}/inherent.yaml

@@ -36,7 +36,9 @@
   - { repo: '{{ kubernetes_repo }}', name: 'kube-scheduler', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'kube-proxy', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
-  - { repo: '{{ kubernetes_repo }}', name: 'coredns', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-sidecar', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-dnsmasq-nanny', tag: '{{ dns_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   run_once: true
 
@@ -52,7 +54,9 @@
   - { repo: '{{ kubernetes_repo }}', name: 'kube-scheduler', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'kube-proxy', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
-  - { repo: '{{ kubernetes_repo }}', name: 'coredns', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-sidecar', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-dnsmasq-nanny', tag: '{{ dns_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   run_once: true
 
@@ -67,6 +71,8 @@
   - { repo: '{{ kubernetes_repo }}', name: 'kube-scheduler', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'kube-proxy', tag: '{{ kubernetes_version }}' }
   - { repo: '{{ kubernetes_repo }}', name: 'pause', tag: '{{ pause_version }}' }
-  - { repo: '{{ kubernetes_repo }}', name: 'coredns', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-kube-dns', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-sidecar', tag: '{{ dns_version }}' }
+  - { repo: '{{ kubernetes_repo }}', name: 'k8s-dns-dnsmasq-nanny', tag: '{{ dns_version }}' }
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   run_once: ture

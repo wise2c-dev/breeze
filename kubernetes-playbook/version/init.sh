@@ -36,7 +36,7 @@ echo "dns_version: ${dns_version}" >> ${path}/yat/all.yml.gotmpl
 echo "pause_version: ${pause_version}" >> ${path}/yat/all.yml.gotmpl
 
 flannel_repo="quay.io/coreos"
-flannel_version=v`cat ${path}/components-version.txt |grep "Flannel" |awk '{print $3}'`
+flannel_version=`cat ${path}/components-version.txt |grep "Flannel" |awk '{print $3}'`
 
 echo "flannel_repo: ${flannel_repo}" >> ${path}/yat/all.yml.gotmpl
 echo "flannel_version: ${flannel_version}-amd64" >> ${path}/yat/all.yml.gotmpl

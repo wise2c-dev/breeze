@@ -15,12 +15,12 @@
       state: absent
     when: ansible_distribution =="CentOS"
 
-  - name: remove swapfile from /etc/fstab for RHEL/Ubuntu
+  - name: remove swapfile from /etc/fstab for RHEL
     mount:
       name: none
       fstype: swap
       state: absent
-    when: (ansible_distribution =="RedHat") or (ansible_distribution =="Ubuntu")
+    when: ansible_distribution =="RedHat"
 
   - name: disable swap
     script: scripts/disable-swap.sh
@@ -36,9 +36,8 @@
     - name: clean yum cache
       shell: |
         yum clean all
-      when: (ansible_distribution =="RedHat") or (ansible_distribution =="CentOS")
         
-    - name: install kubernetes components for Redhat/CentOS
+    - name: install kubernetes components
       yum:
         disablerepo: '*'
         enablerepo: wise2c
@@ -50,19 +49,6 @@
       - kubectl-{{ kubernetes_version[1:] }}
       - kubelet-{{ kubernetes_version[1:] }}
       - kubeadm-{{ kubernetes_version[1:] }}
-      when: (ansible_distribution =="RedHat") or (ansible_distribution =="CentOS")
-
-    - name: install kubernetes components for Ubuntu
-      apt:
-        update_cache: true
-        state: present
-        name: '{{ item }}'
-      with_items:
-      - kubernetes-cni
-      - kubectl
-      - kubelet
-      - kubeadm
-      when: ansible_distribution =="Ubuntu"
 
     - name: unarchive cfssl tool
       unarchive:
@@ -76,25 +62,14 @@
         mode: 0755
       with_items:
       - { src: 'file/prometheus-fix-master-nodes.sh', dest: '/var/tmp/wise2c/kubernetes/' }
-      - { src: 'file/prometheus-fix-master-nodes-ubuntu.sh', dest: '/var/tmp/wise2c/kubernetes/' }
       - { src: 'file/prometheus-fix-worker-nodes.sh', dest: '/var/tmp/wise2c/kubernetes/' }
-      - { src: 'file/prometheus-fix-worker-nodes-ubuntu.sh', dest: '/var/tmp/wise2c/kubernetes/' }
 
-    - name: distribute kubelet config for Redhat/CentOS
+    - name: distribute kubelet config
       template:
         src: '{{ item.src }}'
         dest: '{{ item.dest }}'
       with_items:
       - { src: 'template/kubelet.conf.j2', dest: '/etc/sysconfig/kubelet' }
-      when: (ansible_distribution =="RedHat") or (ansible_distribution =="CentOS")
-
-    - name: distribute kubelet config for Ubuntu
-      template:
-        src: '{{ item.src }}'
-        dest: '{{ item.dest }}'
-      with_items:
-      - { src: 'template/kubelet.conf.j2', dest: '/etc/default/kubelet' }
-      when: ansible_distribution =="Ubuntu"
 
     - name: reload & enable kubelet
       systemd:

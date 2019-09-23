@@ -74,17 +74,6 @@
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   run_once: ture
 
-- name: install git command
-  yum:
-    disablerepo: '*'
-    enablerepo: wise2c
-    update_cache: true
-    state: present
-    name: '{{ item }}'
-  with_items:
-  - git
-  when: (ansible_distribution =="RedHat") or (ansible_distribution =="CentOS")
-
 - name: generate kubeadm config and other yaml files
   template:
     src: '{{ item.src }}'

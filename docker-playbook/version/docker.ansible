@@ -233,6 +233,14 @@
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
 
+  - name: set fs.inotify
+    sysctl:
+      name: fs.inotify.max_user_instances
+      value: 8192
+      sysctl_set: yes
+      state: present
+      reload: true
+
   - name: Fix the warning message "No swap limit support" with docker on Ubuntu
     script: scripts/fix-ubuntu-docker-warning.sh
     when: ansible_distribution =="Ubuntu"

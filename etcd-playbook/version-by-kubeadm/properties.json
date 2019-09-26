@@ -12,7 +12,7 @@
         "label": "Etcd database path on the host",
         "description": "Etcd database path on the host. Etcd database will be stored in this foler.",
         "type": "string",
-        "default": "/data/etcd",
+        "default": "/data/wisecloud/etcd",
         "required": true
     }
 ]

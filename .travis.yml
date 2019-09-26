@@ -14,14 +14,9 @@ before_install:
 
 script:
 - bash init.sh
-- docker build -t wisecloud/playbook:$TRAVIS_BRANCH .
-- docker tag wisecloud/playbook:$TRAVIS_BRANCH registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$TRAVIS_BRANCH
+- docker build -t wisecloud/playbook:$KUBE_VERSION .
+- docker tag wisecloud/playbook:$KUBE_VERSION registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$KUBE_VERSION
 - docker login -u $ALIYUN_USERNAME -p $ALIYUN_PASSWORD registry.cn-hangzhou.aliyuncs.com
-- docker push registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$TRAVIS_BRANCH
-
-deploy:
-  provider: script
-  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push wisecloud/playbook:$TRAVIS_BRANCH
-  on:
-    all_branches: true
-#    condition: "$TRAVIS_BRANCH =~ ^v[0-9]+\\.[0-9]+(\\.[0-9]+)?(-\\S*)?$"
+- docker push registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$KUBE_VERSION
+- docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+- docker push wisecloud/playbook:$KUBE_VERSION

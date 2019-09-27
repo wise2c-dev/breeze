@@ -80,6 +80,7 @@
     - rsync
     - jq
     - docker-ce
+    - python-jinja2
     - python-docker-py
     - docker-compose
     - chrony

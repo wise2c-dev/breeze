@@ -11,17 +11,13 @@ before_install:
 - sudo pip install yq
 - curl -sl https://raw.githubusercontent.com/wise2c-dev/wise2c-config/master/config.yaml -o /tmp/config.yaml
 - KUBE_VERSION=$(cat /tmp/config.yaml |  yq -r '.branchs[] | select(.branch == "release-1.15")|.kube_version')
+- DOCKER_TAG=${KUBE_VERSION}
 
 script:
 - bash init.sh
-- docker build -t wisecloud/playbook:$TRAVIS_BRANCH .
-- docker tag wisecloud/playbook:$TRAVIS_BRANCH registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$TRAVIS_BRANCH
+- docker build -t wisecloud/playbook:$DOCKER_TAG .
+- docker tag wisecloud/playbook:$DOCKER_TAG registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$DOCKER_TAG
 - docker login -u $ALIYUN_USERNAME -p $ALIYUN_PASSWORD registry.cn-hangzhou.aliyuncs.com
-- docker push registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$TRAVIS_BRANCH
-
-deploy:
-  provider: script
-  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push wisecloud/playbook:$TRAVIS_BRANCH
-  on:
-    all_branches: true
-#    condition: "$TRAVIS_BRANCH =~ ^v[0-9]+\\.[0-9]+(\\.[0-9]+)?(-\\S*)?$"
+- docker push registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$DOCKER_TAG
+- docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+- docker push wisecloud/playbook:$DOCKER_TAG

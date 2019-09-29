@@ -144,6 +144,16 @@
     rm -f /usr/local/bin/ipcalc
     ln -s /usr/local/bin/ipcalc-0.41/ipcalc /usr/local/bin/ipcalc
 
+- name: install perl
+  yum:
+    disablerepo: '*'
+    enablerepo: wise2c
+    update_cache: true
+    state: present
+    name: '{{ item }}'
+  with_items:
+  - perl
+
 - name: generate other certificates
   shell: |
     /var/tmp/wise2c/kubernetes/generate-other-certificates.sh

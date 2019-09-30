@@ -8,7 +8,7 @@ version=$1
 
 kubernetes_version=$(cat /tmp/config.yaml    |  yq -r ".branchs[] | select(.branch == \"${version}\")|.kube_version")
 docker_version=docker-$(cat /tmp/config.yaml |  yq -r ".branchs[] | select(.branch == \"${version}\")|.docker_version")
-haproxy_version=$(cat /tmp/config.yaml       |  yq -r ".branchs[] | select(.branch == \"${version}"\)|.haproxy_version")
+haproxy_version=$(cat /tmp/config.yaml       |  yq -r ".branchs[] | select(.branch == \"${version}\")|.haproxy_version")
 keepalived_version=$(cat /tmp/config.yaml    |  yq -r ".branchs[] | select(.branch == \"${version}\")|.keepalived_version")
 loadbalancer_version=HAProxy-${haproxy_version}_Keepalived-${keepalived_version}
 istio_version=$(cat /tmp/config.yaml         |  yq -r ".branchs[] | select(.branch == \"${version}\")|.istio_version")
@@ -32,7 +32,7 @@ echo "HAProxy Version: ${haproxy_version}" >> ${path}/components-version.txt
 echo "Keepalived Version: ${keepalived_version}" >> ${path}/components-version.txt
 echo "Flannel Version: ${flannel_version}" >> ${path}/components-version.txt
 echo "Istio Version: ${istio_version}" >> ${path}/components-version.txt
-echo "Calico Version: ${istio_version}" >> ${path}/components-version.txt
+echo "Calico Version: ${calico_version}" >> ${path}/components-version.txt
 
 for dir in `ls ${path}`
 do

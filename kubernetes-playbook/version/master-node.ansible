@@ -74,6 +74,17 @@
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   run_once: ture
 
+- name: select cni before
+  hosts: node
+  user: root
+  when: (cni == 'Calico')
+  run_once: ture
+  vars:
+    path: {{ path }}
+  tasks:
+  - name: selected Calico cni before
+    include_tasks: calico.before.ansible
+
 - name: generate kubeadm config and other yaml files
   template:
     src: '{{ item.src }}'
@@ -251,11 +262,20 @@
     cp /etc/kubernetes/admin.conf $HOME/.kube/config
     chown $(id -u):$(id -g) $HOME/.kube/config
 
-- name: apply flannel cni
-  shell: |
-    kubectl apply -f {{ path }}/kube-flannel.yml
-  run_once: true
-  when: cni == 'Flannel'
+- name: select cni after
+  hosts: node
+  user: root
+  run_once: ture
+  vars:
+    path: {{ path }}
+  tasks:
+  - name: selected flannel cni
+    shell: |
+      kubectl apply -f {{ path }}/kube-flannel.yml
+    when: cni == 'Flannel'
+  - name: selected Calico  cni after
+    include_tasks: calico.after.ansible
+    when: cni == 'Calico'
 
 - name: replace pod cidr 10.244.0.0/16 in flannel yaml files
   replace:

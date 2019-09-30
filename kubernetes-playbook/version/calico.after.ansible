@@ -1,0 +1,19 @@
+- name: apply calico cni for cluster with more than 50 nodes
+  shell: |
+    kubectl apply -f {{ path }}/calico/k8s-manifests/calico-typha.yaml
+    kubectl apply -f {{ path }}/calico/k8s-manifests/calicoctl.yaml
+  run_once: true
+  when: (cni == 'Calico') and (calico_nodes == 'More_than_50_nodes')
+
+- name: apply calico cni for cluster with 50 nodes or less
+  shell: |
+    kubectl apply -f {{ path }}/calico/k8s-manifests/calico.yaml
+    kubectl apply -f {{ path }}/calico/k8s-manifests/calicoctl.yaml
+  run_once: true
+  when: (cni == 'Calico') and (calico_nodes == '50_nodes_or_less')
+
+- name: scale calico-typha replicas
+  shell: |
+    kubectl -n kube-system scale deployment calico-typha --replicas={{ calico_typha_replicas }}
+  run_once: true
+  when: (cni == 'Calico') and (calico_nodes == 'More_than_50_nodes')

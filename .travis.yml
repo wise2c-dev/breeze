@@ -14,7 +14,7 @@ before_install:
 - DOCKER_TAG=${KUBE_VERSION}
 
 script:
-- bash init.sh $TRAVIS_BRANCH
+- bash +x init.sh ${TRAVIS_BRANCH}
 - docker build -t wisecloud/playbook:$DOCKER_TAG .
 - docker tag wisecloud/playbook:$DOCKER_TAG registry.cn-hangzhou.aliyuncs.com/wise2c-test/playbook:$DOCKER_TAG
 - docker login -u $ALIYUN_USERNAME -p $ALIYUN_PASSWORD registry.cn-hangzhou.aliyuncs.com

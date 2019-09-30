@@ -13,7 +13,7 @@ keepalived_version=$(cat /tmp/config.yaml    |  yq -r ".branchs[] | select(.bran
 loadbalancer_version=HAProxy-${haproxy_version}_Keepalived-${keepalived_version}
 istio_version=$(cat /tmp/config.yaml         |  yq -r ".branchs[] | select(.branch == \"${version}\")|.istio_version")
 flannel_version=$(cat /tmp/config.yaml       |  yq -r ".branchs[] | select(.branch == \"${version}\")|.flannel_version")
-dashboard_version=$(cat /tmp/config.yaml     |  yq -r ".branchs[] | select(.branch == \"${version}\")|.dashboard_version")
+calico_version=$(cat /tmp/config.yaml        |  yq -r ".branchs[] | select(.branch == \"${version}\")|.calico_version")
 
 docker run --rm --name=kubeadm-version wisecloud/kubeadm-version:${kubernetes_version} kubeadm config images list --kubernetes-version ${kubernetes_version} > ${path}/k8s-images-list.txt
 etcd_version=`cat ${path}/k8s-images-list.txt |grep etcd |awk -F ':' '{print $2}'`
@@ -30,9 +30,9 @@ echo "Harbor Version: ${harbor_version}" >> ${path}/components-version.txt
 echo "Docker Version: ${docker_version}" >> ${path}/components-version.txt
 echo "HAProxy Version: ${haproxy_version}" >> ${path}/components-version.txt
 echo "Keepalived Version: ${keepalived_version}" >> ${path}/components-version.txt
-echo "Dashboard Version: ${dashboard_version}" >> ${path}/components-version.txt
 echo "Flannel Version: ${flannel_version}" >> ${path}/components-version.txt
 echo "Istio Version: ${istio_version}" >> ${path}/components-version.txt
+echo "Calico Version: ${istio_version}" >> ${path}/components-version.txt
 
 for dir in `ls ${path}`
 do

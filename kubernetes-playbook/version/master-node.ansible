@@ -152,8 +152,40 @@
   with_items:
     - { filename: "{{ path }}/calico/k8s-manifests/calico.yaml" }
     - { filename: "{{ path }}/calico/k8s-manifests/calico-typha.yaml" }
-    - { filename: "{{ path }}/calico/k8s-manifests/canal.yaml" }
     - { filename: "{{ path }}/calico/k8s-manifests/calicoctl.yaml" }
+  run_once: true
+  when: cni == 'Calico'
+
+- name: replace pod cidr in calico yaml files
+  replace:
+    dest: "{{ item.filename }}"
+    regexp: "192.168.0.0/16"
+    replace: "{{ pod_cidr }}"
+  with_items:
+    - { filename: "{{ path }}/calico/k8s-manifests/calico.yaml" }
+    - { filename: "{{ path }}/calico/k8s-manifests/calico-typha.yaml" }
+  run_once: true
+  when: cni == 'Calico'
+
+- name: replace calico_mode in calico yaml files
+  replace:
+    dest: "{{ item.filename }}"
+    regexp: "value: \"Always\""
+    replace: "value: \"Never\""
+  with_items:
+    - { filename: "{{ path }}/calico/k8s-manifests/calico.yaml" }
+    - { filename: "{{ path }}/calico/k8s-manifests/calico-typha.yaml" }
+  when: (calico_mode == 'BGP') and (cni == 'Calico')
+  run_once: true
+
+- name: add calico_node_ip_detection_mode in calico yaml files
+  replace:
+    dest: "{{ item.filename }}"
+    regexp: '- name: FELIX_HEALTHENABLED[\S\s]*?value: "true"'
+    replace: '- name: FELIX_HEALTHENABLED\n              value: "true"\n            - name: IP_AUTODETECTION_METHOD\n              value: {{ calico_node_ip_detection_mode }}'
+  with_items:
+  - { filename: '{{ path }}/calico/k8s-manifests/calico.yaml' }
+  - { filename: '{{ path }}/calico/k8s-manifests/calico-typha.yaml' }
   run_once: true
   when: cni == 'Calico'
 

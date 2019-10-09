@@ -5,6 +5,7 @@
   with_items:
   - { src: 'file/calico', dest: '{{ path }}/' }
   run_once: true
+  when: cni == 'Calico'
 
 - name: load calico images
   docker_image:
@@ -19,6 +20,7 @@
   - calico/images/calico-pod2daemon-flexvol.tar.bz2
   - calico/images/calico-ctl.tar.bz2
   run_once: true
+  when: cni == 'Calico'
 
 - name: tag calico images
   docker_image:
@@ -33,6 +35,7 @@
   - { repo: 'calico', name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
   - { repo: 'calico', name: 'ctl', tag: '{{ calico_version }}' }
   run_once: true
+  when: cni == 'Calico'
 
 - name: push calico images
   docker_image:
@@ -48,6 +51,7 @@
   - { name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
   - { name: 'ctl', tag: '{{ calico_version }}' }
   run_once: true
+  when: cni == 'Calico'
 
 - name: Remove calico images tag
   docker_image:
@@ -62,6 +66,7 @@
   - { repo: 'calico', name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
   - { repo: 'calico', name: 'ctl', tag: '{{ calico_version }}' }
   run_once: ture
+  when: cni == 'Calico'
 
 - name: replace image repo in calico yaml files
   replace:
@@ -74,6 +79,8 @@
     - { filename: "{{ path }}/calico/k8s-manifests/canal.yaml" }
     - { filename: "{{ path }}/calico/k8s-manifests/calicoctl.yaml" }
   run_once: true
+  when: cni == 'Calico'
+  
 
 - name: replace image repo in canal yaml files
   replace:

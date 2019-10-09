@@ -74,16 +74,88 @@
   - { repo: '{{ flannel_repo }}', name: 'flannel', tag: '{{ flannel_version }}' }
   run_once: ture
 
-- name: select cni before
-  hosts: node
-  user: root
-  when: (cni == 'Calico')
+- name: copy calico folder
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+  - { src: 'file/calico', dest: '{{ path }}/' }
+  run_once: true
+  when: cni == 'Calico'
+
+- name: load calico images
+  docker_image:
+    load_path: '{{ path }}/{{ item }}'
+    name: k8s
+    timeout: 600
+  with_items:
+  - calico/images/calico-cni.tar.bz2
+  - calico/images/calico-kube-controllers.tar.bz2
+  - calico/images/calico-node.tar.bz2
+  - calico/images/calico-typha.tar.bz2
+  - calico/images/calico-pod2daemon-flexvol.tar.bz2
+  - calico/images/calico-ctl.tar.bz2
+  run_once: true
+  when: cni == 'Calico'
+
+- name: tag calico images
+  docker_image:
+    name: '{{ item.repo }}/{{ item.name }}'
+    repository: '{{ registry_endpoint }}/{{ registry_project }}/{{ item.name }}'
+    tag: '{{ item.tag }}'
+  with_items:
+  - { repo: 'calico', name: 'cni', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'kube-controllers', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'node', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'typha', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'ctl', tag: '{{ calico_version }}' }
+  run_once: true
+  when: cni == 'Calico'
+
+- name: push calico images
+  docker_image:
+    name: '{{ registry_endpoint }}/{{ registry_project }}/{{ item.name }}'
+    tag: '{{ item.tag }}'
+    push: true
+    state: present
+  with_items:
+  - { name: 'cni', tag: '{{ calico_version }}' }
+  - { name: 'kube-controllers', tag: '{{ calico_version }}' }
+  - { name: 'node', tag: '{{ calico_version }}' }
+  - { name: 'typha', tag: '{{ calico_version }}' }
+  - { name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
+  - { name: 'ctl', tag: '{{ calico_version }}' }
+  run_once: true
+  when: cni == 'Calico'
+
+- name: Remove calico images tag
+  docker_image:
+    state: absent
+    name: '{{ item.repo }}/{{ item.name }}'
+    tag: '{{ item.tag }}'
+  with_items:
+  - { repo: 'calico', name: 'cni', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'kube-controllers', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'node', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'typha', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'pod2daemon-flexvol', tag: '{{ calico_version }}' }
+  - { repo: 'calico', name: 'ctl', tag: '{{ calico_version }}' }
   run_once: ture
-  vars:
-    path: {{ path }}
-  tasks:
-  - name: selected Calico cni before
-    include_tasks: calico.before.ansible
+  when: cni == 'Calico'
+
+- name: replace image repo in calico yaml files
+  replace:
+    dest: "{{ item.filename }}"
+    regexp: "image: calico/"
+    replace: "image: {{ registry_endpoint }}/{{ registry_project }}/"
+  with_items:
+    - { filename: "{{ path }}/calico/k8s-manifests/calico.yaml" }
+    - { filename: "{{ path }}/calico/k8s-manifests/calico-typha.yaml" }
+    - { filename: "{{ path }}/calico/k8s-manifests/canal.yaml" }
+    - { filename: "{{ path }}/calico/k8s-manifests/calicoctl.yaml" }
+  run_once: true
+  when: cni == 'Calico'
 
 - name: generate kubeadm config and other yaml files
   template:
@@ -262,20 +334,30 @@
     cp /etc/kubernetes/admin.conf $HOME/.kube/config
     chown $(id -u):$(id -g) $HOME/.kube/config
 
-- name: select cni after
-  hosts: node
-  user: root
-  run_once: ture
-  vars:
-    path: {{ path }}
-  tasks:
-  - name: selected flannel cni
-    shell: |
-      kubectl apply -f {{ path }}/kube-flannel.yml
-    when: cni == 'Flannel'
-  - name: selected Calico  cni after
-    include_tasks: calico.after.ansible
-    when: cni == 'Calico'
+- name: selected flannel cni
+  shell: |
+    kubectl apply -f {{ path }}/kube-flannel.yml
+  when: cni == 'Flannel'
+
+- name: apply calico cni for cluster with more than 50 nodes
+  shell: |
+    kubectl apply -f {{ path }}/calico/k8s-manifests/calico-typha.yaml
+    kubectl apply -f {{ path }}/calico/k8s-manifests/calicoctl.yaml
+  run_once: true
+  when: (cni == 'Calico') and (calico_nodes == 'More_than_50_nodes')
+
+- name: apply calico cni for cluster with 50 nodes or less
+  shell: |
+    kubectl apply -f {{ path }}/calico/k8s-manifests/calico.yaml
+    kubectl apply -f {{ path }}/calico/k8s-manifests/calicoctl.yaml
+  run_once: true
+  when: (cni == 'Calico') and (calico_nodes == '50_nodes_or_less')
+
+- name: scale calico-typha replicas
+  shell: |
+    kubectl -n kube-system scale deployment calico-typha --replicas={{ calico_typha_replicas }}
+  run_once: true
+  when: (cni == 'Calico') and (calico_nodes == 'More_than_50_nodes')
 
 - name: replace pod cidr 10.244.0.0/16 in flannel yaml files
   replace:
